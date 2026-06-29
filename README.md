@@ -81,12 +81,10 @@ See `hardware-connection/` for wiring references and images.
 
 ## Notes
 
-- This repository appears to be an active prototype/research project.
+- This repository is an active prototype/research project.
 - Some sketches include work-in-progress sections and likely require cleanup/refinement before production deployment.
 - Frequency and parameter values should be validated against local regulations and your hardware front-end.
 
 ## License
 
 No license file is currently present in this repository.
-
-If you plan to share or reuse this code, consider adding a license (for example MIT, Apache-2.0, or GPL-3.0).
