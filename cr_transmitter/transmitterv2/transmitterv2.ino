@@ -55,6 +55,16 @@
 #define LED_ERROR   33
 
 #define DATA_PACKET_MAGIC 0xDEADBEEF
+
+
+//======================================================================
+// RECONFIGURATION GUARD DELAY
+//======================================================================
+// Gives RX time to receive, parse, and apply the ACK'd config before
+// TX's data radio switches - without this, TX starts transmitting at
+// the new SF/CR before RX is listening for it, guaranteeing 1-2 lost
+// packets on every hop/adapt event. This is a sync race, not real loss.
+const uint32_t RECONFIG_GUARD_DELAY_MS = 300;
 //======================================================================
 // CREATE SHARED SPI BUS
 //======================================================================
@@ -186,6 +196,9 @@ uint16_t readSensor();
 //======================================================================
 // SETUP
 //======================================================================
+//======================================================================
+// SETUP
+//======================================================================
 void setup()
 {
     Serial.begin(115200);
@@ -208,20 +221,58 @@ void setup()
         -1
     );
 
-    if(!initializeDataRadio())
-    {
-        Serial.println("DATA RADIO FAILED");
-        while(true);
-    }
+    const int MAX_RETRIES = 5;
+    int retryCount = 0;
 
-    if(!initializeControlRadio())
+    // --- INITIALIZE DATA RADIO (Max 5 Retries) ---
+    while(!initializeDataRadio())
     {
-        Serial.println("CONTROL RADIO FAILED");
-        while(true);
-    }
+        retryCount++;
+        digitalWrite(LED_ERROR, HIGH); // Turn on error LED to indicate an issue
+        Serial.print("DATA RADIO FAILED (Attempt ");
+        Serial.print(retryCount);
+        Serial.print("/");
+        Serial.print(MAX_RETRIES);
+        Serial.println(")");
 
+        if(retryCount >= MAX_RETRIES)
+        {
+            Serial.println("\n[FATAL ERROR] Data Radio failed to initialize 5 times. Halting execution.");
+            while(true); // Securely lock up if hardware is broken/unplugged
+        }
+
+        Serial.println("Retrying in 2 seconds...");
+        delay(2000);
+    }
+    digitalWrite(LED_ERROR, LOW); // Clear error LED once fixed
+    retryCount = 0;               // Reset counter for the next radio
+
+    // --- INITIALIZE CONTROL RADIO (Max 5 Retries) ---
+    while(!initializeControlRadio())
+    {
+        retryCount++;
+        digitalWrite(LED_ERROR, HIGH);
+        Serial.print("CONTROL RADIO FAILED (Attempt ");
+        Serial.print(retryCount);
+        Serial.print("/");
+        Serial.print(MAX_RETRIES);
+        Serial.println(")");
+
+        if(retryCount >= MAX_RETRIES)
+        {
+            Serial.println("\n[FATAL ERROR] Control Radio failed to initialize 5 times. Halting execution.");
+            while(true);
+        }
+
+        Serial.println("Retrying in 2 seconds...");
+        delay(2000);
+    }
+    digitalWrite(LED_ERROR, LOW); // Clear error LED on success
+
+    // --- SETUP CONTROL CHANNELS AND INTERRUPTS ---
     controlRadio.startReceive();
-    controlRadio.setDio0Action(onCtrlDio0,RISING);
+    controlRadio.setDio0Action(onCtrlDio0, RISING);
+    
     Serial.println();
     Serial.println("System Ready");
     Serial.println();
@@ -533,6 +584,7 @@ ctrlPacketFlag = false;
         case CMD_CHANNEL_HOP:
             Serial.println("Executing Channel Hop...");
             sendControlAck(command.commandID);
+             delay(RECONFIG_GUARD_DELAY_MS);   // NEW - let RX catch up before we switch
             applyRadioConfiguration(
                     command.newFrequencyKHz,
                     currentSF,
@@ -546,6 +598,7 @@ ctrlPacketFlag = false;
         case CMD_LINK_ADAPT:
             Serial.println("Executing Link Adaptation...");
             sendControlAck(command.commandID);
+             delay(RECONFIG_GUARD_DELAY_MS);   // NEW - let RX catch up before we switch
             applyRadioConfiguration(
                     command.newFrequencyKHz,
                     command.newSF,

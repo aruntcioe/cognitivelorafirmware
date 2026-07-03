@@ -1,0 +1,318 @@
+
+
+
+======================================
+ AI Cognitive Radio Receiver
+======================================
+--------------------------------------
+Initializing DATA Radio...
+--------------------------------------
+DATA Radio Ready
+Frequency : 433000.00
+SF : 8
+CR : 4/5
+
+--------------------------------------
+Initializing CONTROL Radio...
+--------------------------------------
+CONTROL Radio Ready
+
+
+Receiver Ready
+
+--- CSV DATASET OUTPUT START ---
+meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR,meanToA,label
+--------------------------------
+sequence Id: 32
+rxTimestamp: 602
+txtimestamp: 16500
+RSSI: -108.00
+SNR: 10.75
+CFO: -524.29
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3550
+--------------------------------
+--------------------------------
+sequence Id: 33
+rxTimestamp: 1102
+txtimestamp: 17000
+RSSI: -106.00
+SNR: 11.50
+CFO: -524.29
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2519
+--------------------------------
+--------------------------------
+sequence Id: 34
+rxTimestamp: 1602
+txtimestamp: 17500
+RSSI: -105.00
+SNR: 10.50
+CFO: -524.29
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1475
+--------------------------------
+--------------------------------
+sequence Id: 35
+rxTimestamp: 2102
+txtimestamp: 18000
+RSSI: -105.00
+SNR: 11.25
+CFO: -524.29
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1694
+--------------------------------
+--------------------------------
+sequence Id: 36
+rxTimestamp: 2602
+txtimestamp: 18500
+RSSI: -106.00
+SNR: 10.25
+CFO: -524.29
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1918
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -106.00
+Variance RSSI : 1.20
+Mean SNR : 10.85
+Variance SNR : 0.21
+Mean ToA : 93000.00
+Mean CFO : -524.29
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-106.0,1.2,10.9,0.2,-524.3,0.000,0,8,5,93000.0,2
+
+[AI] Weak Link
+Increasing Robustness
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+sequence Id: 39
+rxTimestamp: 4377
+txtimestamp: 20000
+RSSI: -105.00
+SNR: 10.50
+CFO: -524.29
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2634
+--------------------------------
+[CTRL] ACK Received
+Receiver Reconfigured
+--------------------------------
+sequence Id: 40
+rxTimestamp: 6076
+txtimestamp: 21634
+RSSI: -105.00
+SNR: 9.25
+CFO: -525.34
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 614
+--------------------------------
+--------------------------------
+sequence Id: 41
+rxTimestamp: 6576
+txtimestamp: 22134
+RSSI: -104.00
+SNR: 9.25
+CFO: -523.24
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 759
+--------------------------------
+--------------------------------
+sequence Id: 42
+rxTimestamp: 7076
+txtimestamp: 22634
+RSSI: -105.00
+SNR: 9.50
+CFO: -519.05
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 1665
+--------------------------------
+--------------------------------
+sequence Id: 43
+rxTimestamp: 7576
+txtimestamp: 23134
+RSSI: -103.00
+SNR: 9.75
+CFO: -516.95
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 552
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.40
+Variance RSSI : 0.64
+Mean SNR : 9.65
+Variance SNR : 0.22
+Mean ToA : 361800.00
+Mean CFO : -521.77
+PLR : 0.29
+CRC Failures : 0
+Current SF : 10
+Current CR : 8
+====================================
+-104.4,0.6,9.6,0.2,-521.8,0.286,0,10,8,361800.0,1
+
+[AI] Jammer Detected
+Channel Hopping...
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+sequence Id: 46
+rxTimestamp: 9351
+txtimestamp: 24634
+RSSI: -104.00
+SNR: 3.25
+CFO: -502.27
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3857
+--------------------------------
+[CTRL] ACK Received
+Receiver Reconfigured
+--------------------------------
+sequence Id: 48
+rxTimestamp: 11244
+txtimestamp: 26802
+RSSI: -105.00
+SNR: 11.25
+CFO: -502.27
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 419
+--------------------------------
+--------------------------------
+sequence Id: 49
+rxTimestamp: 11744
+txtimestamp: 27302
+RSSI: -105.00
+SNR: 11.50
+CFO: -498.07
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3907
+--------------------------------
+--------------------------------
+sequence Id: 50
+rxTimestamp: 12244
+txtimestamp: 27802
+RSSI: -105.00
+SNR: 11.50
+CFO: -495.98
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3206
+--------------------------------
+--------------------------------
+sequence Id: 51
+rxTimestamp: 12744
+txtimestamp: 28302
+RSSI: -104.00
+SNR: 11.75
+CFO: -493.88
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 2386
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.24
+Mean SNR : 9.85
+Variance SNR : 10.91
+Mean ToA : 429000.00
+Mean CFO : -498.49
+PLR : 0.37
+CRC Failures : 0
+Current SF : 10
+Current CR : 8
+====================================
+-104.6,0.2,9.9,10.9,-498.5,0.375,0,10,8,429000.0,1
+
+[AI] Jammer Detected
+Channel Hopping...
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+sequence Id: 54
+rxTimestamp: 14520
+txtimestamp: 29802
+RSSI: -110.00
+SNR: 8.50
+CFO: -479.20
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3905
+--------------------------------
+[CTRL] ACK Received
+Receiver Reconfigured
+[DATA] RX Error : -24
+[DATA] CRC Failure
+[DATA] Implausible packet rejected - Seq=1981045022 Sensor=48904
+[DATA] CRC Failure
+[DATA] CRC Failure
+
+=====================================================
+SYSTEM HALTED - DATA radio (RX) malfunction detected (connection/antenna/hardware).
+Last known-good sequence/ID : 54
+All TX/RX operations stopped. Power-cycle to recover.
+=====================================================

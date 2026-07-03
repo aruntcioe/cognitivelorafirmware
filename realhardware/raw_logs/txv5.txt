@@ -1,0 +1,95 @@
+
+
+=========================================
+ Cognitive Radio Transmitter
+=========================================
+-----------------------------------------
+Initializing DATA Radio...
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+DATA Radio Frequency 433.00 MHz
+DATA Radio Initialized
+Frequency (kHz) : 433000
+SF : 8
+CR : 4/5
+
+-----------------------------------------
+Initializing CONTROL Radio...
+-----------------------------------------
+CONTROL Radio Initialized
+Frequency : 445.00
+SF : 12
+CR : 4/8
+
+
+System Ready
+
+[DATA] Transmission Failed : -5
+[DATA] Transmission Failed : -16
+[DATA] Seq=2  Sensor=2127  Time=1500
+[DATA] Seq=3  Sensor=2615  Time=2000
+[DATA] Seq=4  Sensor=3972  Time=2500
+[DATA] Seq=5  Sensor=3977  Time=3000
+[DATA] Seq=6  Sensor=1348  Time=3500
+[DATA] Seq=7  Sensor=2843  Time=4000
+[DATA] Seq=8  Sensor=2930  Time=4500
+[DATA] Seq=9  Sensor=1407  Time=5000
+[DATA] Seq=10  Sensor=3816  Time=5500
+[DATA] Seq=11  Sensor=2437  Time=6000
+[DATA] Seq=12  Sensor=3166  Time=6500
+[DATA] Seq=13  Sensor=1654  Time=7000
+[DATA] Seq=14  Sensor=2751  Time=7500
+[DATA] Seq=15  Sensor=2007  Time=8000
+[DATA] Seq=16  Sensor=1811  Time=8500
+[DATA] Seq=17  Sensor=455  Time=9000
+[DATA] Seq=18  Sensor=1043  Time=9500
+[DATA] Seq=19  Sensor=400  Time=10000
+[DATA] Seq=20  Sensor=2171  Time=10500
+[DATA] Seq=21  Sensor=3505  Time=11000
+[DATA] Seq=22  Sensor=3362  Time=11500
+[DATA] Seq=23  Sensor=1612  Time=12000
+[DATA] Seq=24  Sensor=610  Time=12500
+[DATA] Seq=25  Sensor=833  Time=13000
+[DATA] Seq=26  Sensor=799  Time=13500
+[DATA] Seq=27  Sensor=1030  Time=14000
+[DATA] Seq=28  Sensor=3027  Time=14500
+[DATA] Seq=29  Sensor=183  Time=15000
+[DATA] Seq=30  Sensor=3857  Time=15500
+[DATA] Seq=31  Sensor=3932  Time=16000
+[DATA] Seq=32  Sensor=1914  Time=16500
+[DATA] Seq=33  Sensor=649  Time=17000
+[DATA] Seq=34  Sensor=3652  Time=17500
+[DATA] Seq=35  Sensor=1393  Time=18000
+[DATA] Seq=36  Sensor=716  Time=18500
+[DATA] Seq=37  Sensor=1838  Time=19000
+[DATA] Seq=38  Sensor=3070  Time=19500
+[DATA] Seq=39  Sensor=167  Time=20000
+[DATA] Seq=40  Sensor=3103  Time=20500
+[DATA] Seq=41  Sensor=1695  Time=21000
+[DATA] Seq=42  Sensor=3025  Time=21500
+[DATA] Seq=43  Sensor=3930  Time=22000
+[DATA] Seq=44  Sensor=4074  Time=22500
+[DATA] Seq=45  Sensor=763  Time=23000
+[DATA] Seq=46  Sensor=1911  Time=23500
+[DATA] Seq=47  Sensor=660  Time=24000
+[DATA] Seq=48  Sensor=3165  Time=24500
+[DATA] Seq=49  Sensor=707  Time=25000
+[DATA] Seq=50  Sensor=2267  Time=25500
+[DATA] Seq=51  Sensor=674  Time=26000
+[DATA] Seq=52  Sensor=22  Time=26500
+[DATA] Seq=53  Sensor=3846  Time=27000
+[DATA] Seq=54  Sensor=1645  Time=27500
+[DATA] Seq=55  Sensor=1203  Time=28000
+[DATA] Seq=56  Sensor=3701  Time=28500
+[DATA] Seq=57  Sensor=3708  Time=29000
+[DATA] Seq=58  Sensor=2556  Time=29500
+[DATA] Seq=59  Sensor=448  Time=30000
+[DATA] Seq=60  Sensor=1384  Time=30500
+[DATA] Seq=61  Sensor=507  Time=31000
+[DATA] Seq=62  Sensor=1529  Time=31500
+[DATA] Seq=63  Sensor=3045  Time=32000
+[DATA] Seq=64  Sensor=114  Time=32500
+[DATA] Seq=65  Sensor=705  Time=33000
+[DATA] Seq=66  Sensor=2839  Time=33500
+[DATA] Seq=67  Sensor=1046  Time=34000

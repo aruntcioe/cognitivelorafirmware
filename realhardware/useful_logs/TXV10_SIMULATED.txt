@@ -1,0 +1,1059 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:4876
+ho 0 tail 12 room 4
+load:0x40078000,len:16560
+load:0x40080400,len:3500
+entry 0x400805b4
+
+=========================================
+ Cognitive Radio Transmitter
+=========================================
+-----------------------------------------
+Initializing DATA Radio...
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+DATA Radio Frequency 433.00 MHz
+DATA Radio Initialized
+Frequency (kHz) : 433000
+SF : 8
+CR : 4/5
+
+-----------------------------------------
+Initializing CONTROL Radio...
+-----------------------------------------
+CONTROL Radio Initialized
+Frequency : 445.00
+SF : 12
+CR : 4/8
+
+
+System Ready
+
+[DATA] Seq=0  Sensor=796  Time=500
+[DATA] Seq=1  Sensor=1440  Time=1000
+[DATA] Seq=2  Sensor=548  Time=1500
+[DATA] Seq=3  Sensor=2718  Time=2000
+[DATA] Seq=4  Sensor=1169  Time=2500
+[DATA] Seq=5  Sensor=2103  Time=3000
+[DATA] Seq=6  Sensor=1951  Time=3500
+[DATA] Seq=7  Sensor=2864  Time=4000
+[DATA] Seq=8  Sensor=3217  Time=4500
+[DATA] Seq=9  Sensor=2320  Time=5000
+[DATA] Seq=10  Sensor=3724  Time=5500
+[DATA] Seq=11  Sensor=135  Time=6000
+[DATA] Seq=12  Sensor=2273  Time=6500
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 1
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 1
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 8
+Old CR : 4/5
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=13  Sensor=1872  Time=8434
+[DATA] Seq=14  Sensor=4037  Time=8934
+[DATA] Seq=15  Sensor=2602  Time=9434
+[DATA] Seq=16  Sensor=125  Time=9934
+[DATA] Seq=17  Sensor=3003  Time=10434
+[DATA] Seq=18  Sensor=3557  Time=10934
+[DATA] Seq=19  Sensor=3625  Time=11434
+[DATA] Seq=20  Sensor=2828  Time=11934
+[DATA] Seq=21  Sensor=2014  Time=12434
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 2
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 2
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=22  Sensor=2440  Time=14401
+[DATA] Seq=23  Sensor=2606  Time=14901
+[DATA] Seq=24  Sensor=1067  Time=15401
+[DATA] Seq=25  Sensor=1098  Time=15901
+[DATA] Seq=26  Sensor=1557  Time=16401
+[DATA] Seq=27  Sensor=2312  Time=16901
+[DATA] Seq=28  Sensor=1721  Time=17401
+[DATA] Seq=29  Sensor=2927  Time=17901
+[DATA] Seq=30  Sensor=48  Time=18401
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 3
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 3
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=31  Sensor=550  Time=20368
+[DATA] Seq=32  Sensor=3732  Time=20868
+[DATA] Seq=33  Sensor=886  Time=21368
+[DATA] Seq=34  Sensor=185  Time=21868
+[DATA] Seq=35  Sensor=3471  Time=22368
+[DATA] Seq=36  Sensor=3300  Time=22868
+[DATA] Seq=37  Sensor=2450  Time=23368
+[DATA] Seq=38  Sensor=2683  Time=23868
+[DATA] Seq=39  Sensor=2591  Time=24368
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 4
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 4
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=40  Sensor=3730  Time=26335
+[DATA] Seq=41  Sensor=785  Time=26835
+[DATA] Seq=42  Sensor=3865  Time=27335
+[DATA] Seq=43  Sensor=175  Time=27835
+[DATA] Seq=44  Sensor=277  Time=28335
+[DATA] Seq=45  Sensor=393  Time=28835
+[DATA] Seq=46  Sensor=2773  Time=29335
+[DATA] Seq=47  Sensor=1691  Time=29835
+[DATA] Seq=48  Sensor=3302  Time=30335
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 5
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 5
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=49  Sensor=2882  Time=32302
+[DATA] Seq=50  Sensor=410  Time=32802
+[DATA] Seq=51  Sensor=1559  Time=33302
+[DATA] Seq=52  Sensor=849  Time=33802
+[DATA] Seq=53  Sensor=271  Time=34302
+[DATA] Seq=54  Sensor=4091  Time=34802
+[DATA] Seq=55  Sensor=3165  Time=35302
+[DATA] Seq=56  Sensor=626  Time=35802
+[DATA] Seq=57  Sensor=2407  Time=36302
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 6
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 6
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=58  Sensor=801  Time=38269
+[DATA] Seq=59  Sensor=1129  Time=38769
+[DATA] Seq=60  Sensor=2406  Time=39269
+[DATA] Seq=61  Sensor=1105  Time=39769
+[DATA] Seq=62  Sensor=1121  Time=40269
+[DATA] Seq=63  Sensor=468  Time=40769
+[DATA] Seq=64  Sensor=2172  Time=41269
+[DATA] Seq=65  Sensor=1361  Time=41769
+[DATA] Seq=66  Sensor=3541  Time=42269
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 7
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 7
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=67  Sensor=1248  Time=44236
+[DATA] Seq=68  Sensor=3065  Time=44736
+[DATA] Seq=69  Sensor=1345  Time=45236
+[DATA] Seq=70  Sensor=340  Time=45736
+[DATA] Seq=71  Sensor=2694  Time=46236
+[DATA] Seq=72  Sensor=4047  Time=46736
+[DATA] Seq=73  Sensor=1105  Time=47236
+[DATA] Seq=74  Sensor=2193  Time=47736
+[DATA] Seq=75  Sensor=1427  Time=48236
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 8
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 8
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=76  Sensor=2746  Time=50203
+[DATA] Seq=77  Sensor=583  Time=50703
+[DATA] Seq=78  Sensor=1021  Time=51203
+[DATA] Seq=79  Sensor=3945  Time=51703
+[DATA] Seq=80  Sensor=321  Time=52203
+[DATA] Seq=81  Sensor=502  Time=52703
+[DATA] Seq=82  Sensor=348  Time=53203
+[DATA] Seq=83  Sensor=2887  Time=53703
+[DATA] Seq=84  Sensor=1581  Time=54203
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 9
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 9
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=85  Sensor=1451  Time=56170
+[DATA] Seq=86  Sensor=1473  Time=56670
+[DATA] Seq=87  Sensor=840  Time=57170
+[DATA] Seq=88  Sensor=3362  Time=57670
+[DATA] Seq=89  Sensor=3830  Time=58170
+[DATA] Seq=90  Sensor=601  Time=58670
+[DATA] Seq=91  Sensor=2924  Time=59170
+[DATA] Seq=92  Sensor=2227  Time=59670
+[DATA] Seq=93  Sensor=2500  Time=60170
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 10
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 10
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=94  Sensor=21  Time=62137
+[DATA] Seq=95  Sensor=186  Time=62637
+[DATA] Seq=96  Sensor=2891  Time=63137
+[DATA] Seq=97  Sensor=3052  Time=63637
+[DATA] Seq=98  Sensor=329  Time=64137
+[DATA] Seq=99  Sensor=1657  Time=64637
+[DATA] Seq=100  Sensor=2001  Time=65137
+[DATA] Seq=101  Sensor=2651  Time=65637
+[DATA] Seq=102  Sensor=428  Time=66137
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 11
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 11
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=103  Sensor=617  Time=68104
+[DATA] Seq=104  Sensor=1172  Time=68604
+[DATA] Seq=105  Sensor=451  Time=69104
+[DATA] Seq=106  Sensor=1234  Time=69604
+[DATA] Seq=107  Sensor=1318  Time=70104
+[DATA] Seq=108  Sensor=2611  Time=70604
+[DATA] Seq=109  Sensor=1855  Time=71104
+[DATA] Seq=110  Sensor=278  Time=71604
+[DATA] Seq=111  Sensor=2275  Time=72104
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 12
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 12
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=112  Sensor=2813  Time=74071
+[DATA] Seq=113  Sensor=999  Time=74571
+[DATA] Seq=114  Sensor=230  Time=75071
+[DATA] Seq=115  Sensor=2645  Time=75571
+[DATA] Seq=116  Sensor=853  Time=76071
+[DATA] Seq=117  Sensor=1807  Time=76571
+[DATA] Seq=118  Sensor=698  Time=77071
+[DATA] Seq=119  Sensor=1583  Time=77571
+[DATA] Seq=120  Sensor=2713  Time=78071
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 13
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 13
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=121  Sensor=1006  Time=80038
+[DATA] Seq=122  Sensor=1347  Time=80538
+[DATA] Seq=123  Sensor=2452  Time=81038
+[DATA] Seq=124  Sensor=1823  Time=81538
+[DATA] Seq=125  Sensor=221  Time=82038
+[DATA] Seq=126  Sensor=731  Time=82538
+[DATA] Seq=127  Sensor=3235  Time=83038
+[DATA] Seq=128  Sensor=233  Time=83538
+[DATA] Seq=129  Sensor=2813  Time=84038
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 14
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 14
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=130  Sensor=3430  Time=86005
+[DATA] Seq=131  Sensor=1870  Time=86505
+[DATA] Seq=132  Sensor=3980  Time=87005
+[DATA] Seq=133  Sensor=2363  Time=87505
+[DATA] Seq=134  Sensor=513  Time=88005
+[DATA] Seq=135  Sensor=3615  Time=88505
+[DATA] Seq=136  Sensor=3373  Time=89005
+[DATA] Seq=137  Sensor=1474  Time=89505
+[DATA] Seq=138  Sensor=476  Time=90005
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 15
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 15
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=139  Sensor=3592  Time=91972
+[DATA] Seq=140  Sensor=1527  Time=92472
+[DATA] Seq=141  Sensor=3867  Time=92972
+[DATA] Seq=142  Sensor=75  Time=93472
+[DATA] Seq=143  Sensor=3402  Time=93972
+[DATA] Seq=144  Sensor=3334  Time=94472
+[DATA] Seq=145  Sensor=418  Time=94972
+[DATA] Seq=146  Sensor=2623  Time=95472
+[DATA] Seq=147  Sensor=1377  Time=95972
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 16
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 16
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=148  Sensor=2382  Time=97939
+[DATA] Seq=149  Sensor=560  Time=98439
+[DATA] Seq=150  Sensor=2224  Time=98939
+[DATA] Seq=151  Sensor=2272  Time=99439
+[DATA] Seq=152  Sensor=87  Time=99939
+[DATA] Seq=153  Sensor=2535  Time=100439
+[DATA] Seq=154  Sensor=3793  Time=100939
+[DATA] Seq=155  Sensor=730  Time=101439
+[DATA] Seq=156  Sensor=2544  Time=101939
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 17
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 17
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=157  Sensor=3835  Time=103906
+[DATA] Seq=158  Sensor=4045  Time=104406
+[DATA] Seq=159  Sensor=3736  Time=104906
+[DATA] Seq=160  Sensor=668  Time=105406
+[DATA] Seq=161  Sensor=30  Time=105906
+[DATA] Seq=162  Sensor=1281  Time=106406
+[DATA] Seq=163  Sensor=410  Time=106906
+[DATA] Seq=164  Sensor=874  Time=107406
+[DATA] Seq=165  Sensor=4022  Time=107906
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 18
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 18
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=166  Sensor=750  Time=109873
+[DATA] Seq=167  Sensor=2741  Time=110373
+[DATA] Seq=168  Sensor=3226  Time=110873
+[DATA] Seq=169  Sensor=824  Time=111373
+[DATA] Seq=170  Sensor=4061  Time=111873
+[DATA] Seq=171  Sensor=1208  Time=112373
+[DATA] Seq=172  Sensor=1285  Time=112873
+[DATA] Seq=173  Sensor=601  Time=113373
+[DATA] Seq=174  Sensor=1410  Time=113873
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 19
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 19
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=175  Sensor=2907  Time=115840
+[DATA] Seq=176  Sensor=792  Time=116340
+[DATA] Seq=177  Sensor=3162  Time=116840
+[DATA] Seq=178  Sensor=1773  Time=117340
+[DATA] Seq=179  Sensor=4093  Time=117840
+[DATA] Seq=180  Sensor=2273  Time=118340
+[DATA] Seq=181  Sensor=1341  Time=118840
+[DATA] Seq=182  Sensor=3103  Time=119340
+[DATA] Seq=183  Sensor=2272  Time=119840
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 20
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 20
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=184  Sensor=3741  Time=121807
+[DATA] Seq=185  Sensor=388  Time=122307
+[DATA] Seq=186  Sensor=2083  Time=122807
+[DATA] Seq=187  Sensor=691  Time=123307
+[DATA] Seq=188  Sensor=85  Time=123807
+[DATA] Seq=189  Sensor=3391  Time=124307
+[DATA] Seq=190  Sensor=3506  Time=124807
+[DATA] Seq=191  Sensor=4008  Time=125307
+[DATA] Seq=192  Sensor=3451  Time=125807
+[DATA] Seq=193  Sensor=1993  Time=126307
+[DATA] Seq=194  Sensor=1750  Time=126807
+[DATA] Seq=195  Sensor=1119  Time=127307
+[DATA] Seq=196  Sensor=613  Time=127807
+[DATA] Seq=197  Sensor=260  Time=128307
+[DATA] Seq=198  Sensor=3304  Time=128807
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 21
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 21
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=199  Sensor=778  Time=130794
+[DATA] Seq=200  Sensor=687  Time=131294
+[DATA] Seq=201  Sensor=2824  Time=131794
+[DATA] Seq=202  Sensor=2841  Time=132294
+[DATA] Seq=203  Sensor=1211  Time=132794
+[DATA] Seq=204  Sensor=3380  Time=133294
+[DATA] Seq=205  Sensor=1749  Time=133794
+[DATA] Seq=206  Sensor=3125  Time=134294
+[DATA] Seq=207  Sensor=3490  Time=134794
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 22
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 22
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=208  Sensor=2045  Time=136761
+[DATA] Seq=209  Sensor=590  Time=137261
+[DATA] Seq=210  Sensor=2298  Time=137761
+[DATA] Seq=211  Sensor=3106  Time=138261
+[DATA] Seq=212  Sensor=3706  Time=138761
+[DATA] Seq=213  Sensor=963  Time=139261
+[DATA] Seq=214  Sensor=344  Time=139761
+[DATA] Seq=215  Sensor=3275  Time=140261
+[DATA] Seq=216  Sensor=1598  Time=140761
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 23
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 23
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=217  Sensor=602  Time=142728
+[DATA] Seq=218  Sensor=2998  Time=143228
+[DATA] Seq=219  Sensor=1382  Time=143728
+[DATA] Seq=220  Sensor=839  Time=144228
+[DATA] Seq=221  Sensor=1476  Time=144728
+[DATA] Seq=222  Sensor=2148  Time=145228
+[DATA] Seq=223  Sensor=3127  Time=145728
+[DATA] Seq=224  Sensor=1974  Time=146228
+[DATA] Seq=225  Sensor=445  Time=146728
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 24
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 24
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=226  Sensor=1144  Time=148695
+[DATA] Seq=227  Sensor=204  Time=149195
+[DATA] Seq=228  Sensor=3028  Time=149695
+[DATA] Seq=229  Sensor=3696  Time=150195
+[DATA] Seq=230  Sensor=1941  Time=150695
+[DATA] Seq=231  Sensor=1696  Time=151195
+[DATA] Seq=232  Sensor=1205  Time=151695
+[DATA] Seq=233  Sensor=1807  Time=152195
+[DATA] Seq=234  Sensor=1559  Time=152695
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 25
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 25
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=235  Sensor=3587  Time=154662
+[DATA] Seq=236  Sensor=1518  Time=155162
+[DATA] Seq=237  Sensor=1544  Time=155662
+[DATA] Seq=238  Sensor=2133  Time=156162
+[DATA] Seq=239  Sensor=3307  Time=156662
+[DATA] Seq=240  Sensor=1982  Time=157162
+[DATA] Seq=241  Sensor=103  Time=157662
+[DATA] Seq=242  Sensor=5  Time=158162
+[DATA] Seq=243  Sensor=3523  Time=158662
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 26
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 26
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=244  Sensor=1209  Time=160629
+[DATA] Seq=245  Sensor=3388  Time=161129
+[DATA] Seq=246  Sensor=1456  Time=161629
+[DATA] Seq=247  Sensor=2157  Time=162129
+[DATA] Seq=248  Sensor=269  Time=162629
+[DATA] Seq=249  Sensor=1548  Time=163129
+[DATA] Seq=250  Sensor=1724  Time=163629
+[DATA] Seq=251  Sensor=3332  Time=164129
+[DATA] Seq=252  Sensor=2726  Time=164629
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 27
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 27
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=253  Sensor=1782  Time=166596
+[DATA] Seq=254  Sensor=865  Time=167096
+[DATA] Transmission Failed : -16
+[DATA] Transmission Failed : -16
+[DATA] Transmission Failed : -16
+[DATA] Transmission Failed : -16
+[DATA] Transmission Failed : -16
+
+=====================================================
+SYSTEM HALTED - DATA radio (TX) malfunction detected (connection/antenna/hardware).
+Last known-good sequence/ID : 254
+All TX/RX operations stopped. Power-cycle to recover.
+=====================================================

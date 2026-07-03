@@ -1,0 +1,972 @@
+=========================================
+ Cognitive Radio Transmitter
+=========================================
+-----------------------------------------
+Initializing DATA Radio...
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+DATA Radio Frequency 433.00 MHz
+DATA Radio Initialized
+Frequency (kHz) : 433000
+SF : 8
+CR : 4/5
+
+-----------------------------------------
+Initializing CONTROL Radio...
+-----------------------------------------
+CONTROL Radio Initialized
+Frequency : 445.00
+SF : 12
+CR : 4/8
+
+
+System Ready
+
+[DATA] Seq=0  Sensor=2395  Time=500
+[DATA] Seq=1  Sensor=1960  Time=1000
+[DATA] Seq=2  Sensor=3678  Time=1500
+[DATA] Seq=3  Sensor=2526  Time=2000
+[DATA] Seq=4  Sensor=2931  Time=2500
+[DATA] Seq=5  Sensor=1819  Time=3000
+[DATA] Seq=6  Sensor=3904  Time=3500
+[DATA] Seq=7  Sensor=1718  Time=4000
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 1
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 8
+Old CR : 4/5
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 1
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=8  Sensor=1000  Time=5601
+[DATA] Seq=9  Sensor=887  Time=6101
+[DATA] Seq=10  Sensor=465  Time=6601
+[DATA] Seq=11  Sensor=2890  Time=7101
+[DATA] Seq=12  Sensor=2686  Time=7601
+[DATA] Seq=13  Sensor=4083  Time=8101
+[DATA] Seq=14  Sensor=903  Time=8601
+[DATA] Seq=15  Sensor=2722  Time=9101
+[DATA] Seq=16  Sensor=452  Time=9601
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 2
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 2
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=17  Sensor=2742  Time=11192
+[DATA] Seq=18  Sensor=2647  Time=11692
+[DATA] Seq=19  Sensor=3453  Time=12192
+[DATA] Seq=20  Sensor=1987  Time=12692
+[DATA] Seq=21  Sensor=3340  Time=13192
+[DATA] Seq=22  Sensor=3301  Time=13692
+[DATA] Seq=23  Sensor=1224  Time=14192
+[DATA] Seq=24  Sensor=198  Time=14692
+[DATA] Seq=25  Sensor=471  Time=15192
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 3
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 3
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=26  Sensor=2554  Time=16783
+[DATA] Seq=27  Sensor=183  Time=17283
+[DATA] Seq=28  Sensor=332  Time=17783
+[DATA] Seq=29  Sensor=3924  Time=18283
+[DATA] Seq=30  Sensor=3788  Time=18783
+[DATA] Seq=31  Sensor=420  Time=19283
+[DATA] Seq=32  Sensor=3584  Time=19783
+[DATA] Seq=33  Sensor=395  Time=20283
+[DATA] Seq=34  Sensor=3920  Time=20783
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 4
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 4
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=35  Sensor=3336  Time=22374
+[DATA] Seq=36  Sensor=2243  Time=22874
+[DATA] Seq=37  Sensor=1277  Time=23374
+[DATA] Seq=38  Sensor=3356  Time=23874
+[DATA] Seq=39  Sensor=2292  Time=24374
+[DATA] Seq=40  Sensor=3721  Time=24874
+[DATA] Seq=41  Sensor=956  Time=25374
+[DATA] Seq=42  Sensor=846  Time=25874
+[DATA] Seq=43  Sensor=915  Time=26374
+[DATA] Seq=44  Sensor=1975  Time=26874
+[DATA] Seq=45  Sensor=826  Time=27374
+[DATA] Seq=46  Sensor=1142  Time=27874
+[DATA] Seq=47  Sensor=135  Time=28374
+[DATA] Seq=48  Sensor=2836  Time=28874
+[DATA] Seq=49  Sensor=3596  Time=29374
+[DATA] Seq=50  Sensor=4057  Time=29874
+[DATA] Seq=51  Sensor=1089  Time=30374
+[DATA] Seq=52  Sensor=2679  Time=30874
+[DATA] Seq=53  Sensor=1468  Time=31374
+[DATA] Seq=54  Sensor=2904  Time=31874
+[DATA] Seq=55  Sensor=2131  Time=32374
+[DATA] Seq=56  Sensor=1349  Time=32874
+[DATA] Seq=57  Sensor=4055  Time=33374
+[DATA] Seq=58  Sensor=2370  Time=33874
+[DATA] Seq=59  Sensor=246  Time=34374
+[DATA] Seq=60  Sensor=65  Time=34874
+[DATA] Seq=61  Sensor=2777  Time=35374
+[DATA] Seq=62  Sensor=645  Time=35874
+[DATA] Seq=63  Sensor=1090  Time=36374
+[DATA] Seq=64  Sensor=2157  Time=36874
+[DATA] Seq=65  Sensor=3467  Time=37374
+[DATA] Seq=66  Sensor=969  Time=37874
+[DATA] Seq=67  Sensor=1276  Time=38374
+[DATA] Seq=68  Sensor=3434  Time=38874
+[DATA] Seq=69  Sensor=579  Time=39374
+[DATA] Seq=70  Sensor=767  Time=39874
+[DATA] Seq=71  Sensor=2903  Time=40374
+[DATA] Seq=72  Sensor=1013  Time=40874
+[DATA] Seq=73  Sensor=2834  Time=41374
+[DATA] Seq=74  Sensor=2747  Time=41874
+[DATA] Seq=75  Sensor=667  Time=42374
+[DATA] Seq=76  Sensor=1685  Time=42874
+[DATA] Seq=77  Sensor=562  Time=43374
+[DATA] Seq=78  Sensor=2092  Time=43874
+[DATA] Seq=79  Sensor=51  Time=44374
+[DATA] Seq=80  Sensor=3130  Time=44874
+[DATA] Seq=81  Sensor=538  Time=45374
+[DATA] Seq=82  Sensor=3576  Time=45874
+[DATA] Seq=83  Sensor=450  Time=46374
+[DATA] Seq=84  Sensor=69  Time=46874
+[DATA] Seq=85  Sensor=554  Time=47374
+[DATA] Seq=86  Sensor=2708  Time=47874
+[DATA] Seq=87  Sensor=1804  Time=48374
+[DATA] Seq=88  Sensor=2465  Time=48874
+[DATA] Seq=89  Sensor=2953  Time=49374
+[DATA] Seq=90  Sensor=3082  Time=49874
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 5
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 5
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=91  Sensor=1920  Time=51465
+[DATA] Seq=92  Sensor=2402  Time=51965
+[DATA] Seq=93  Sensor=119  Time=52465
+[DATA] Seq=94  Sensor=3287  Time=52965
+[DATA] Seq=95  Sensor=3602  Time=53465
+[DATA] Seq=96  Sensor=191  Time=53965
+[DATA] Seq=97  Sensor=2394  Time=54465
+[DATA] Seq=98  Sensor=431  Time=54965
+[DATA] Seq=99  Sensor=2114  Time=55465
+[DATA] Seq=100  Sensor=1087  Time=55965
+[DATA] Seq=101  Sensor=2338  Time=56465
+[DATA] Seq=102  Sensor=3615  Time=56965
+[DATA] Seq=103  Sensor=1103  Time=57465
+[DATA] Seq=104  Sensor=4014  Time=57965
+[DATA] Seq=105  Sensor=2890  Time=58465
+[DATA] Seq=106  Sensor=2596  Time=58965
+[DATA] Seq=107  Sensor=3196  Time=59465
+[DATA] Seq=108  Sensor=2590  Time=59965
+[DATA] Seq=109  Sensor=2672  Time=60465
+[DATA] Seq=110  Sensor=2840  Time=60965
+[DATA] Seq=111  Sensor=317  Time=61465
+[DATA] Seq=112  Sensor=2643  Time=61965
+[DATA] Seq=113  Sensor=3907  Time=62465
+[DATA] Seq=114  Sensor=3685  Time=62965
+[DATA] Seq=115  Sensor=4054  Time=63465
+[DATA] Seq=116  Sensor=3592  Time=63965
+[DATA] Seq=117  Sensor=2426  Time=64465
+[DATA] Seq=118  Sensor=2405  Time=64965
+[DATA] Seq=119  Sensor=723  Time=65465
+[DATA] Seq=120  Sensor=4051  Time=65965
+[DATA] Seq=121  Sensor=2393  Time=66465
+[DATA] Seq=122  Sensor=3849  Time=66965
+[DATA] Seq=123  Sensor=2634  Time=67465
+[DATA] Seq=124  Sensor=1976  Time=67965
+[DATA] Seq=125  Sensor=558  Time=68465
+[DATA] Seq=126  Sensor=280  Time=68965
+[DATA] Seq=127  Sensor=705  Time=69465
+[DATA] Seq=128  Sensor=3688  Time=69965
+[DATA] Seq=129  Sensor=3055  Time=70465
+[DATA] Seq=130  Sensor=1033  Time=70965
+[DATA] Seq=131  Sensor=337  Time=71465
+[DATA] Seq=132  Sensor=3545  Time=71965
+[DATA] Seq=133  Sensor=323  Time=72465
+[DATA] Seq=134  Sensor=863  Time=72965
+[DATA] Seq=135  Sensor=1519  Time=73465
+[DATA] Seq=136  Sensor=2220  Time=73965
+[DATA] Seq=137  Sensor=520  Time=74465
+[DATA] Seq=138  Sensor=75  Time=74965
+[DATA] Seq=139  Sensor=2648  Time=75465
+[DATA] Seq=140  Sensor=1652  Time=75965
+[DATA] Seq=141  Sensor=3626  Time=76465
+[DATA] Seq=142  Sensor=393  Time=76965
+[DATA] Seq=143  Sensor=2725  Time=77465
+[DATA] Seq=144  Sensor=1238  Time=77965
+[DATA] Seq=145  Sensor=433  Time=78465
+[DATA] Seq=146  Sensor=1846  Time=78965
+[DATA] Seq=147  Sensor=4065  Time=79465
+[DATA] Seq=148  Sensor=2751  Time=79965
+[DATA] Seq=149  Sensor=1222  Time=80465
+[DATA] Seq=150  Sensor=2923  Time=80965
+[DATA] Seq=151  Sensor=3850  Time=81465
+[DATA] Seq=152  Sensor=1261  Time=81965
+[DATA] Seq=153  Sensor=1554  Time=82465
+[DATA] Seq=154  Sensor=294  Time=82965
+[DATA] Seq=155  Sensor=1363  Time=83465
+[DATA] Seq=156  Sensor=1244  Time=83965
+[DATA] Seq=157  Sensor=3644  Time=84465
+[DATA] Seq=158  Sensor=3262  Time=84965
+[DATA] Seq=159  Sensor=256  Time=85465
+[DATA] Seq=160  Sensor=1040  Time=85965
+[DATA] Seq=161  Sensor=3401  Time=86465
+[DATA] Seq=162  Sensor=3697  Time=86965
+[DATA] Seq=163  Sensor=1830  Time=87465
+[DATA] Seq=164  Sensor=2073  Time=87965
+[DATA] Seq=165  Sensor=630  Time=88465
+[DATA] Seq=166  Sensor=1848  Time=88965
+[DATA] Seq=167  Sensor=3118  Time=89465
+[DATA] Seq=168  Sensor=1154  Time=89965
+[DATA] Seq=169  Sensor=469  Time=90465
+[DATA] Seq=170  Sensor=1053  Time=90965
+[DATA] Seq=171  Sensor=2499  Time=91465
+[DATA] Seq=172  Sensor=3402  Time=91965
+[DATA] Seq=173  Sensor=2607  Time=92465
+[DATA] Seq=174  Sensor=1857  Time=92965
+[DATA] Seq=175  Sensor=2023  Time=93465
+[DATA] Seq=176  Sensor=3031  Time=93965
+[DATA] Seq=177  Sensor=2231  Time=94465
+[DATA] Seq=178  Sensor=2274  Time=94965
+[DATA] Seq=179  Sensor=2084  Time=95465
+[DATA] Seq=180  Sensor=2474  Time=95965
+[DATA] Seq=181  Sensor=3147  Time=96465
+[DATA] Seq=182  Sensor=2979  Time=96965
+[DATA] Seq=183  Sensor=3349  Time=97465
+[DATA] Seq=184  Sensor=1034  Time=97965
+[DATA] Seq=185  Sensor=3353  Time=98465
+[DATA] Seq=186  Sensor=1610  Time=98965
+[DATA] Seq=187  Sensor=1656  Time=99465
+[DATA] Seq=188  Sensor=2748  Time=99965
+[DATA] Seq=189  Sensor=906  Time=100465
+[DATA] Seq=190  Sensor=1365  Time=100965
+[DATA] Seq=191  Sensor=2159  Time=101465
+[DATA] Seq=192  Sensor=1387  Time=101965
+[DATA] Seq=193  Sensor=468  Time=102465
+[DATA] Seq=194  Sensor=2092  Time=102965
+[DATA] Seq=195  Sensor=1661  Time=103465
+[DATA] Seq=196  Sensor=2020  Time=103965
+[DATA] Seq=197  Sensor=1842  Time=104465
+[DATA] Seq=198  Sensor=542  Time=104965
+[DATA] Seq=199  Sensor=246  Time=105465
+[DATA] Seq=200  Sensor=3949  Time=105965
+[DATA] Seq=201  Sensor=1077  Time=106465
+[DATA] Seq=202  Sensor=1387  Time=106965
+[DATA] Seq=203  Sensor=339  Time=107465
+[DATA] Seq=204  Sensor=1643  Time=107965
+[DATA] Seq=205  Sensor=284  Time=108465
+[DATA] Seq=206  Sensor=2111  Time=108965
+[DATA] Seq=207  Sensor=883  Time=109465
+[DATA] Seq=208  Sensor=171  Time=109965
+[DATA] Seq=209  Sensor=1365  Time=110465
+[DATA] Seq=210  Sensor=1818  Time=110965
+[DATA] Seq=211  Sensor=3746  Time=111465
+[DATA] Seq=212  Sensor=1975  Time=111965
+[DATA] Seq=213  Sensor=2785  Time=112465
+[DATA] Seq=214  Sensor=3084  Time=112965
+[DATA] Seq=215  Sensor=3999  Time=113465
+[DATA] Seq=216  Sensor=3124  Time=113965
+[DATA] Seq=217  Sensor=3905  Time=114465
+[DATA] Seq=218  Sensor=2709  Time=114965
+[DATA] Seq=219  Sensor=2128  Time=115465
+[DATA] Seq=220  Sensor=78  Time=115965
+[DATA] Seq=221  Sensor=21  Time=116465
+[DATA] Seq=222  Sensor=1107  Time=116965
+[DATA] Seq=223  Sensor=3698  Time=117465
+[DATA] Seq=224  Sensor=4049  Time=117965
+[DATA] Seq=225  Sensor=3734  Time=118465
+[DATA] Seq=226  Sensor=1631  Time=118965
+[DATA] Seq=227  Sensor=461  Time=119465
+[DATA] Seq=228  Sensor=3461  Time=119965
+[DATA] Seq=229  Sensor=417  Time=120465
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 6
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 6
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=230  Sensor=3813  Time=122056
+[DATA] Seq=231  Sensor=1161  Time=122556
+[DATA] Seq=232  Sensor=3826  Time=123056
+[DATA] Seq=233  Sensor=2364  Time=123556
+[DATA] Seq=234  Sensor=3772  Time=124056
+[DATA] Seq=235  Sensor=712  Time=124556
+[DATA] Seq=236  Sensor=3548  Time=125056
+[DATA] Seq=237  Sensor=2211  Time=125556
+[DATA] Seq=238  Sensor=2210  Time=126056
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 7
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 7
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=239  Sensor=3493  Time=127647
+[DATA] Seq=240  Sensor=772  Time=128147
+[DATA] Seq=241  Sensor=2333  Time=128647
+[DATA] Seq=242  Sensor=2187  Time=129147
+[DATA] Seq=243  Sensor=4076  Time=129647
+[DATA] Seq=244  Sensor=1300  Time=130147
+[DATA] Seq=245  Sensor=556  Time=130647
+[DATA] Seq=246  Sensor=3731  Time=131147
+[DATA] Seq=247  Sensor=178  Time=131647
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 8
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 8
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=248  Sensor=23  Time=133238
+[DATA] Seq=249  Sensor=3416  Time=133738
+[DATA] Seq=250  Sensor=768  Time=134238
+[DATA] Seq=251  Sensor=3103  Time=134738
+[DATA] Seq=252  Sensor=938  Time=135238
+[DATA] Seq=253  Sensor=1151  Time=135738
+[DATA] Seq=254  Sensor=1933  Time=136238
+[DATA] Seq=255  Sensor=3313  Time=136738
+[DATA] Seq=256  Sensor=3485  Time=137238
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 9
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 9
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=257  Sensor=633  Time=138829
+[DATA] Seq=258  Sensor=4008  Time=139329
+[DATA] Seq=259  Sensor=1797  Time=139829
+[DATA] Seq=260  Sensor=978  Time=140329
+[DATA] Seq=261  Sensor=3387  Time=140829
+[DATA] Seq=262  Sensor=2542  Time=141329
+[DATA] Seq=263  Sensor=3065  Time=141829
+[DATA] Seq=264  Sensor=1316  Time=142329
+[DATA] Seq=265  Sensor=449  Time=142829
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 10
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 10
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=266  Sensor=649  Time=144420
+[DATA] Seq=267  Sensor=2228  Time=144920
+[DATA] Seq=268  Sensor=114  Time=145420
+[DATA] Seq=269  Sensor=3369  Time=145920
+[DATA] Seq=270  Sensor=1755  Time=146420
+[DATA] Seq=271  Sensor=824  Time=146920
+[DATA] Seq=272  Sensor=85  Time=147420
+[DATA] Seq=273  Sensor=575  Time=147920
+[DATA] Seq=274  Sensor=3730  Time=148420
+[DATA] Seq=275  Sensor=934  Time=148920
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 11
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 11
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=276  Sensor=1144  Time=150511
+[DATA] Seq=277  Sensor=736  Time=151011
+[DATA] Seq=278  Sensor=748  Time=151511
+[DATA] Seq=279  Sensor=1126  Time=152011
+[DATA] Seq=280  Sensor=744  Time=152511
+[DATA] Seq=281  Sensor=4018  Time=153011
+[DATA] Seq=282  Sensor=877  Time=153511
+[DATA] Seq=283  Sensor=3635  Time=154011
+[DATA] Seq=284  Sensor=1138  Time=154511
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 12
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 12
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=285  Sensor=2206  Time=156102
+[DATA] Seq=286  Sensor=3776  Time=156602
+[DATA] Seq=287  Sensor=855  Time=157102
+[DATA] Seq=288  Sensor=2372  Time=157602
+[DATA] Seq=289  Sensor=796  Time=158102
+[DATA] Seq=290  Sensor=3732  Time=158602
+[DATA] Seq=291  Sensor=929  Time=159102
+[DATA] Seq=292  Sensor=1123  Time=159602
+[DATA] Seq=293  Sensor=1872  Time=160102
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 13
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 13
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=294  Sensor=3311  Time=161693
+[DATA] Seq=295  Sensor=3484  Time=162193
+[DATA] Seq=296  Sensor=1676  Time=162693
+[DATA] Seq=297  Sensor=421  Time=163193
+[DATA] Seq=298  Sensor=2643  Time=163693
+[DATA] Seq=299  Sensor=2091  Time=164193
+[DATA] Seq=300  Sensor=298  Time=164693
+[DATA] Seq=301  Sensor=943  Time=165193
+[DATA] Seq=302  Sensor=2709  Time=165693
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 14
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 14
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=303  Sensor=2433  Time=167284
+[DATA] Seq=304  Sensor=2840  Time=167784
+[DATA] Seq=305  Sensor=962  Time=168284
+[DATA] Seq=306  Sensor=1589  Time=168784
+[DATA] Seq=307  Sensor=377  Time=169284
+[DATA] Seq=308  Sensor=2207  Time=169784
+[DATA] Seq=309  Sensor=1354  Time=170284
+[DATA] Seq=310  Sensor=2475  Time=170784
+[DATA] Seq=311  Sensor=3638  Time=171284
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 15
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 15
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=312  Sensor=3723  Time=172875
+[DATA] Seq=313  Sensor=1032  Time=173375
+[DATA] Seq=314  Sensor=529  Time=173875
+[DATA] Seq=315  Sensor=3393  Time=174375
+[DATA] Seq=316  Sensor=3389  Time=174875
+[DATA] Seq=317  Sensor=1471  Time=175375
+[DATA] Seq=318  Sensor=2386  Time=175875
+[DATA] Seq=319  Sensor=702  Time=176375
+[DATA] Seq=320  Sensor=2226  Time=176875
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 16
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 16
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=321  Sensor=48  Time=178466
+[DATA] Seq=322  Sensor=3003  Time=178966
+[DATA] Seq=323  Sensor=3104  Time=179466
+[DATA] Seq=324  Sensor=413  Time=179966
+[DATA] Seq=325  Sensor=3315  Time=180466
+[DATA] Seq=326  Sensor=3945  Time=180966
+[DATA] Seq=327  Sensor=481  Time=181466
+[DATA] Seq=328  Sensor=3329  Time=181966
+[DATA] Seq=329  Sensor=3828  Time=182466
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 17
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 17
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=330  Sensor=3741  Time=184057
+[DATA] Seq=331  Sensor=1526  Time=184557
+[DATA] Seq=332  Sensor=3444  Time=185057
+[DATA] Seq=333  Sensor=3804  Time=185557
+[DATA] Seq=334  Sensor=1785  Time=186057
+[DATA] Seq=335  Sensor=3379  Time=186557
+[DATA] Seq=336  Sensor=1951  Time=187057
+[DATA] Seq=337  Sensor=303  Time=187557
+[DATA] Seq=338  Sensor=969  Time=188057
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 18
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 18
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=339  Sensor=4007  Time=189648
+[DATA] Seq=340  Sensor=691  Time=190148
+[DATA] Seq=341  Sensor=1139  Time=190648
+[DATA] Seq=342  Sensor=728  Time=191148
+[DATA] Seq=343  Sensor=2911  Time=191648
+[DATA] Seq=344  Sensor=2221  Time=192148
+[DATA] Seq=345  Sensor=425  Time=192648
+[DATA] Seq=346  Sensor=3914  Time=193148
+[DATA] Seq=347  Sensor=3726  Time=193648
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 19
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 19
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=348  Sensor=1183  Time=195239
+[DATA] Seq=349  Sensor=957  Time=195739
+[DATA] Seq=350  Sensor=2771  Time=196239
+[DATA] Seq=351  Sensor=1204  Time=196739
+[DATA] Seq=352  Sensor=1503  Time=197239
+[DATA] Seq=353  Sensor=611  Time=197739
+[DATA] Seq=354  Sensor=615  Time=198239
+[DATA] Seq=355  Sensor=193  Time=198739
+[DATA] Seq=356  Sensor=3768  Time=199239
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 20
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 20
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=357  Sensor=3969  Time=200830
+[DATA] Seq=358  Sensor=3762  Time=201330
+[DATA] Seq=359  Sensor=963  Time=201830
+[DATA] Seq=360  Sensor=4015  Time=202330
+[DATA] Seq=361  Sensor=349  Time=202830
+[DATA] Seq=362  Sensor=1176  Time=203330
+[DATA] Seq=363  Sensor=3290  Time=203830
+[DATA] Seq=364  Sensor=20  Time=204330
+[DATA] Seq=365  Sensor=1171  Time=204830
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 21
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+[CTRL] ACK Sent : 21
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=366  Sensor=730  Time=206421
+[DATA] Seq=367  Sensor=2677  Time=206921
+[DATA] Seq=368  Sensor=2402  Time=207421
+[DATA] Seq=369  Sensor=2089  Time=207921
+[DATA] Seq=370  Sensor=3122  Time=208421
+[DATA] Seq=371  Sensor=251  Time=208921
+[DATA] Seq=372  Sensor=2580  Time=209421
+[DATA] Seq=373  Sensor=1743  Time=209921
+[DATA] Seq=374  Sensor=1805  Time=210421
+[DATA] Seq=375  Sensor=1568  Time=210921
+[DATA] Seq=376  Sensor=2041  Time=211421
+[DATA] Seq=377  Sensor=2462  Time=211921
+[DATA] Seq=378  Sensor=2949  Time=212421
+[DATA] Seq=379  Sensor=1270  Time=212921

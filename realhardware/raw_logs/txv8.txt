@@ -1,0 +1,208 @@
+
+=========================================
+ Cognitive Radio Transmitter
+=========================================
+-----------------------------------------
+Initializing DATA Radio...
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+DATA Radio Frequency 433.00 MHz
+DATA Radio Initialized
+Frequency (kHz) : 433000
+SF : 8
+CR : 4/5
+
+-----------------------------------------
+Initializing CONTROL Radio...
+-----------------------------------------
+CONTROL Radio Initialized
+Frequency : 445.00
+SF : 12
+CR : 4/8
+
+
+System Ready
+
+[DATA] Seq=0  Sensor=2357  Time=500
+[DATA] Seq=1  Sensor=1048  Time=1000
+[DATA] Seq=2  Sensor=1647  Time=1500
+[DATA] Seq=3  Sensor=3896  Time=2000
+[DATA] Seq=4  Sensor=1299  Time=2500
+[DATA] Seq=5  Sensor=3824  Time=3000
+[DATA] Seq=6  Sensor=2078  Time=3500
+[DATA] Seq=7  Sensor=2506  Time=4000
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 1
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 1
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 8
+Old CR : 4/5
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=8  Sensor=2208  Time=5934
+[DATA] Seq=9  Sensor=3570  Time=6434
+[DATA] Seq=10  Sensor=3916  Time=6934
+[DATA] Seq=11  Sensor=4036  Time=7434
+[DATA] Seq=12  Sensor=2155  Time=7934
+[DATA] Seq=13  Sensor=628  Time=8434
+[DATA] Seq=14  Sensor=2665  Time=8934
+[DATA] Seq=15  Sensor=3198  Time=9434
+[DATA] Seq=16  Sensor=749  Time=9934
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 2
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 2
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=17  Sensor=1565  Time=11901
+[DATA] Seq=18  Sensor=3935  Time=12401
+[DATA] Seq=19  Sensor=3526  Time=12901
+[DATA] Seq=20  Sensor=4022  Time=13401
+[DATA] Seq=21  Sensor=827  Time=13901
+[DATA] Seq=22  Sensor=2742  Time=14401
+[DATA] Seq=23  Sensor=3239  Time=14901
+[DATA] Seq=24  Sensor=1720  Time=15401
+[DATA] Seq=25  Sensor=593  Time=15901
+[CTRL] DIO0 fired - packet detected on control radio
+
+====================================
+AI CONTROL COMMAND RECEIVED
+====================================
+Command ID : 3
+Command Type : 2
+Frequency (kHz) : 433000
+SF : 10
+CR : 4/8
+
+Executing Link Adaptation...
+[CTRL] ACK Sent : 3
+
+========== APPLYING NEW CONFIGURATION ==========
+Old Frequency (kHz) : 433000
+Old SF : 10
+Old CR : 4/8
+
+New Frequency (kHz) : 433000
+New SF : 10
+New CR : 4/8
+Configuration Updated
+===============================================
+
+Configuration Applied Successfully
+====================================
+
+[DATA] Seq=26  Sensor=1926  Time=17872
+[DATA] Seq=27  Sensor=413  Time=18372
+[DATA] Seq=28  Sensor=155  Time=18872
+[DATA] Seq=29  Sensor=3990  Time=19372
+[DATA] Seq=30  Sensor=0  Time=19872
+[DATA] Seq=31  Sensor=3849  Time=20372
+[DATA] Seq=32  Sensor=3721  Time=20872
+[DATA] Seq=33  Sensor=812  Time=21372
+[DATA] Seq=34  Sensor=2787  Time=21872
+[DATA] Seq=35  Sensor=883  Time=22372
+[DATA] Seq=36  Sensor=122  Time=22872
+[DATA] Seq=37  Sensor=3589  Time=23372
+[DATA] Seq=38  Sensor=42  Time=23872
+[DATA] Seq=39  Sensor=2230  Time=24372
+[DATA] Seq=40  Sensor=1435  Time=24872
+[DATA] Seq=41  Sensor=2426  Time=25372
+[DATA] Seq=42  Sensor=3534  Time=25872
+[DATA] Seq=43  Sensor=3896  Time=26372
+[DATA] Seq=44  Sensor=503  Time=26872
+[DATA] Seq=45  Sensor=2636  Time=27372
+[DATA] Seq=46  Sensor=3552  Time=27872
+[DATA] Seq=47  Sensor=1979  Time=28372
+[DATA] Seq=48  Sensor=2117  Time=28872
+[DATA] Seq=49  Sensor=3262  Time=29372
+[DATA] Seq=50  Sensor=1652  Time=29872
+[DATA] Seq=51  Sensor=1182  Time=30372
+[DATA] Seq=52  Sensor=1702  Time=30872
+[DATA] Seq=53  Sensor=821  Time=31372
+[DATA] Seq=54  Sensor=2236  Time=31872
+[DATA] Seq=55  Sensor=1640  Time=32372
+[DATA] Seq=56  Sensor=3264  Time=32872
+[DATA] Seq=57  Sensor=1374  Time=33372
+[DATA] Seq=58  Sensor=2318  Time=33872
+[DATA] Seq=59  Sensor=3275  Time=34372
+[DATA] Seq=60  Sensor=3958  Time=34872
+[DATA] Seq=61  Sensor=1064  Time=35372
+[DATA] Seq=62  Sensor=2048  Time=35872
+[DATA] Seq=63  Sensor=1476  Time=36372
+[DATA] Seq=64  Sensor=2853  Time=36872
+[DATA] Seq=65  Sensor=906  Time=37372
+[DATA] Seq=66  Sensor=1936  Time=37872
+[DATA] Seq=67  Sensor=3462  Time=38372
+[DATA] Seq=68  Sensor=2987  Time=38872
+[DATA] Seq=69  Sensor=3258  Time=39372
+[DATA] Seq=70  Sensor=266  Time=39872
+[DATA] Seq=71  Sensor=1668  Time=40372
+[DATA] Seq=72  Sensor=2044  Time=40872
+[DATA] Seq=73  Sensor=1681  Time=41372
+[DATA] Seq=74  Sensor=4050  Time=41872
+[DATA] Seq=75  Sensor=8  Time=42372
+[DATA] Seq=76  Sensor=2773  Time=42872
+[DATA] Seq=77  Sensor=3776  Time=43372
+[DATA] Seq=78  Sensor=1749  Time=43872
+[DATA] Seq=79  Sensor=2547  Time=44372
+[DATA] Seq=80  Sensor=1966  Time=44872
+[DATA] Seq=81  Sensor=1858  Time=45372
+[DATA] Seq=82  Sensor=66  Time=45872
+[DATA] Seq=83  Sensor=3586  Time=46372
+[DATA] Seq=84  Sensor=597  Time=46872
+[DATA] Seq=85  Sensor=1706  Time=47372
+[DATA] Seq=86  Sensor=2474  Time=47872
+[DATA] Transmission Failed : -5
+[DATA] Transmission Failed : -5
+[DATA] Transmission Failed : -5
+[DATA] Transmission Failed : -5
+[DATA] Transmission Failed : -5
+
+=====================================================
+SYSTEM HALTED - DATA radio (TX) malfunction detected (connection/antenna/hardware).
+Last known-good sequence/ID : 86
+All TX/RX operations stopped. Power-cycle to recover.
+=====================================================

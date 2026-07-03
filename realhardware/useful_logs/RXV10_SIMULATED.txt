@@ -1,0 +1,1023 @@
+NOTE: ABOVE DATA TRIMMED IN TERMINAL    
+.txtimestamp: 99439
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -273.68
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2272
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 152
+    . rxTimestamp: 121449
+    . txtimestamp: 99939
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -273.68
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 87
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.80
+    . Variance RSSI : 0.16
+    . Mean SNR : 13.55
+    . Variance SNR : 0.03
+    . Mean ToA : 429000.00
+    . Mean CFO : -275.36
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[18] -100.8,0.2,13.6,0.0,-275.4,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 155
+    . rxTimestamp: 123224
+    . txtimestamp: 101439
+    . sensor: 730
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 157
+    . rxTimestamp: 125417
+    . txtimestamp: 103906
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -273.68
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3835
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 158
+    . rxTimestamp: 125916
+    . txtimestamp: 104406
+    . RSSI: -100.00
+    . SNR: 13.50
+    . CFO: -271.58
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 4045
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 159
+    . rxTimestamp: 126416
+    . txtimestamp: 104906
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -269.48
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3736
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 160
+    . rxTimestamp: 126916
+    . txtimestamp: 105406
+    . RSSI: -100.00
+    . SNR: 14.00
+    . CFO: -267.39
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 668
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 161
+    . rxTimestamp: 127417
+    . txtimestamp: 105906
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -267.39
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 30
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.60
+    . Variance RSSI : 0.24
+    . Mean SNR : 13.70
+    . Variance SNR : 0.04
+    . Mean ToA : 429000.00
+    . Mean CFO : -269.90
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[19] -100.6,0.2,13.7,0.0,-269.9,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 164
+    . rxTimestamp: 129191
+    . txtimestamp: 107406
+    . sensor: 874
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 166
+    . rxTimestamp: 131385
+    . txtimestamp: 109873
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -261.10
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 750
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 167
+    . rxTimestamp: 131884
+    . txtimestamp: 110373
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -259.00
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2741
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 168
+    . rxTimestamp: 132384
+    . txtimestamp: 110873
+    . RSSI: -101.00
+    . SNR: 14.00
+    . CFO: -256.90
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3226
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 169
+    . rxTimestamp: 132884
+    . txtimestamp: 111373
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -256.90
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 824
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 170
+    . rxTimestamp: 133384
+    . txtimestamp: 111873
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -254.80
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 4061
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.40
+    . Variance RSSI : 0.24
+    . Mean SNR : 13.80
+    . Variance SNR : 0.01
+    . Mean ToA : 429000.00
+    . Mean CFO : -257.74
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[20] -100.4,0.2,13.8,0.0,-257.7,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 173
+    . rxTimestamp: 135158
+    . txtimestamp: 113373
+    . sensor: 601
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 175
+    . rxTimestamp: 137352
+    . txtimestamp: 115840
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -254.80
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2907
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 176
+    . rxTimestamp: 137851
+    . txtimestamp: 116340
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -252.71
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 792
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 177
+    . rxTimestamp: 138351
+    . txtimestamp: 116840
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -250.61
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3162
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 178
+    . rxTimestamp: 138851
+    . txtimestamp: 117340
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -248.51
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1773
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 179
+    . rxTimestamp: 139351
+    . txtimestamp: 117840
+    . RSSI: -101.00
+    . SNR: 13.00
+    . CFO: -248.51
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 4093
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -101.00
+    . Variance RSSI : 0.00
+    . Mean SNR : 13.45
+    . Variance SNR : 0.06
+    . Mean ToA : 429000.00
+    . Mean CFO : -251.03
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[21] -101.0,0.0,13.4,0.1,-251.0,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 182
+    . rxTimestamp: 141126
+    . txtimestamp: 119340
+    . sensor: 3103
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 184
+    . rxTimestamp: 143319
+    . txtimestamp: 121807
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -252.71
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3741
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 185
+    . rxTimestamp: 143818
+    . txtimestamp: 122307
+    . RSSI: -101.00
+    . SNR: 14.00
+    . CFO: -250.61
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 388
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 186
+    . rxTimestamp: 144318
+    . txtimestamp: 122807
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -246.42
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2083
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 187
+    . rxTimestamp: 144818
+    . txtimestamp: 123307
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -244.32
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 691
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 188
+    . rxTimestamp: 145318
+    . txtimestamp: 123807
+    . RSSI: -100.00
+    . SNR: 13.50
+    . CFO: -242.22
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 85
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.60
+    . Variance RSSI : 0.24
+    . Mean SNR : 13.70
+    . Variance SNR : 0.03
+    . Mean ToA : 429000.00
+    . Mean CFO : -247.25
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[22] -100.6,0.2,13.7,0.0,-247.3,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 191
+    . rxTimestamp: 147093
+    . txtimestamp: 125307
+    . sensor: 4008
+    . --------------------------------
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 193
+    . rxTimestamp: 147818
+    . txtimestamp: 126307
+    . sensor: 1993
+    . --------------------------------
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 194
+    . rxTimestamp: 148318
+    . txtimestamp: 126807
+    . sensor: 1750
+    . --------------------------------
+    . [CTRL] ACK Timeout - retrying...
+    . [CTRL] Sending command (attempt 2/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 197
+    . rxTimestamp: 150308
+    . txtimestamp: 128307
+    . sensor: 260
+    . --------------------------------
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 198
+    . rxTimestamp: 150321
+    . txtimestamp: 128807
+    . sensor: 3304
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 199
+    . rxTimestamp: 152306
+    . txtimestamp: 130794
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -238.03
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 778
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 200
+    . rxTimestamp: 152805
+    . txtimestamp: 131294
+    . RSSI: -101.00
+    . SNR: 13.25
+    . CFO: -238.03
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 687
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 201
+    . rxTimestamp: 153305
+    . txtimestamp: 131794
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -235.93
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2824
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 202
+    . rxTimestamp: 153805
+    . txtimestamp: 132294
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -233.83
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2841
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 203
+    . rxTimestamp: 154305
+    . txtimestamp: 132794
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -235.93
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1211
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.60
+    . Variance RSSI : 0.24
+    . Mean SNR : 13.60
+    . Variance SNR : 0.04
+    . Mean ToA : 429000.00
+    . Mean CFO : -236.35
+    . PLR : 0.50
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[23] -100.6,0.2,13.6,0.0,-236.3,0.500,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 206
+    . rxTimestamp: 156080
+    . txtimestamp: 134294
+    . sensor: 3125
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 208
+    . rxTimestamp: 158274
+    . txtimestamp: 136761
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -235.93
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2045
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 209
+    . rxTimestamp: 158773
+    . txtimestamp: 137261
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -231.74
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 590
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 210
+    . rxTimestamp: 159273
+    . txtimestamp: 137761
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -227.54
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2298
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 211
+    . rxTimestamp: 159773
+    . txtimestamp: 138261
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -227.54
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3106
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 212
+    . rxTimestamp: 160273
+    . txtimestamp: 138761
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -227.54
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3706
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.40
+    . Variance RSSI : 0.24
+    . Mean SNR : 13.70
+    . Variance SNR : 0.01
+    . Mean ToA : 429000.00
+    . Mean CFO : -230.06
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[24] -100.4,0.2,13.7,0.0,-230.1,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 215
+    . rxTimestamp: 162047
+    . txtimestamp: 140261
+    . sensor: 3275
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 217
+    . rxTimestamp: 164241
+    . txtimestamp: 142728
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -229.64
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 602
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 218
+    . rxTimestamp: 164740
+    . txtimestamp: 143228
+    . RSSI: -101.00
+    . SNR: 13.25
+    . CFO: -225.44
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2998
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 219
+    . rxTimestamp: 165240
+    . txtimestamp: 143728
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -223.35
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1382
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 220
+    . rxTimestamp: 165740
+    . txtimestamp: 144228
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -221.25
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 839
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 221
+    . rxTimestamp: 166240
+    . txtimestamp: 144728
+    . RSSI: -101.00
+    . SNR: 13.25
+    . CFO: -221.25
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1476
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -101.00
+    . Variance RSSI : 0.00
+    . Mean SNR : 13.40
+    . Variance SNR : 0.02
+    . Mean ToA : 429000.00
+    . Mean CFO : -224.19
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[25] -101.0,0.0,13.4,0.0,-224.2,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 224
+    . rxTimestamp: 168014
+    . txtimestamp: 146228
+    . sensor: 1974
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 226
+    . rxTimestamp: 170208
+    . txtimestamp: 148695
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -225.44
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1144
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 227
+    . rxTimestamp: 170707
+    . txtimestamp: 149195
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -221.25
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 204
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 228
+    . rxTimestamp: 171207
+    . txtimestamp: 149695
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -221.25
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3028
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 229
+    . rxTimestamp: 171707
+    . txtimestamp: 150195
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -219.15
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3696
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 230
+    . rxTimestamp: 172207
+    . txtimestamp: 150695
+    . RSSI: -100.00
+    . SNR: 13.75
+    . CFO: -214.96
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1941
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.80
+    . Variance RSSI : 0.16
+    . Mean SNR : 13.65
+    . Variance SNR : 0.02
+    . Mean ToA : 429000.00
+    . Mean CFO : -220.41
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[26] -100.8,0.2,13.6,0.0,-220.4,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 233
+    . rxTimestamp: 173982
+    . txtimestamp: 152195
+    . sensor: 1807
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 235
+    . rxTimestamp: 176175
+    . txtimestamp: 154662
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -219.15
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3587
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 236
+    . rxTimestamp: 176674
+    . txtimestamp: 155162
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -217.06
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1518
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 237
+    . rxTimestamp: 177174
+    . txtimestamp: 155662
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -214.96
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1544
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 238
+    . rxTimestamp: 177674
+    . txtimestamp: 156162
+    . RSSI: -101.00
+    . SNR: 13.25
+    . CFO: -212.86
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2133
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 239
+    . rxTimestamp: 178174
+    . txtimestamp: 156662
+    . RSSI: -101.00
+    . SNR: 13.25
+    . CFO: -210.76
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3307
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -101.00
+    . Variance RSSI : 0.00
+    . Mean SNR : 13.45
+    . Variance SNR : 0.04
+    . Mean ToA : 429000.00
+    . Mean CFO : -214.96
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[27] -101.0,0.0,13.4,0.0,-215.0,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 242
+    . rxTimestamp: 179949
+    . txtimestamp: 158162
+    . sensor: 5
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 244
+    . rxTimestamp: 182142
+    . txtimestamp: 160629
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -219.15
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1209
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 245
+    . rxTimestamp: 182641
+    . txtimestamp: 161129
+    . RSSI: -101.00
+    . SNR: 13.50
+    . CFO: -217.06
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 3388
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 246
+    . rxTimestamp: 183141
+    . txtimestamp: 161629
+    . RSSI: -100.00
+    . SNR: 13.50
+    . CFO: -214.96
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1456
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 247
+    . rxTimestamp: 183641
+    . txtimestamp: 162129
+    . RSSI: -100.00
+    . SNR: 13.50
+    . CFO: -212.86
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 2157
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 248
+    . rxTimestamp: 184141
+    . txtimestamp: 162629
+    . RSSI: -101.00
+    . SNR: 13.75
+    . CFO: -212.86
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 269
+    . --------------------------------
+    . =======================================
+    . Feature Window Complete
+    . =======================================
+    . ========== FEATURE VECTOR ==========
+    . Mean RSSI : -100.60
+    . Variance RSSI : 0.24
+    . Mean SNR : 13.55
+    . Variance SNR : 0.01
+    . Mean ToA : 429000.00
+    . Mean CFO : -215.38
+    . PLR : 0.37
+    . CRC Failures : 0
+    . Current SF : 10
+    . Current CR : 8
+    . ====================================
+[28] -100.6,0.2,13.6,0.0,-215.4,0.375,0,10,8,429000.0,2
+    . [AI] Weak Link
+    . Increasing Robustness
+    . [CTRL] Sending command (attempt 1/4)...
+    . --------------------------------
+    . Feature collection is halted: sequence Id: 251
+    . rxTimestamp: 185916
+    . txtimestamp: 164129
+    . sensor: 3332
+    . --------------------------------
+    . [CTRL] ACK Received
+    . Receiver Reconfigured
+    . --------------------------------
+    . sequence Id: 253
+    . rxTimestamp: 188110
+    . txtimestamp: 166596
+    . RSSI: -103.00
+    . SNR: 11.25
+    . CFO: -214.96
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 1782
+    . --------------------------------
+    . --------------------------------
+    . sequence Id: 254
+    . rxTimestamp: 188609
+    . txtimestamp: 167096
+    . RSSI: -103.00
+    . SNR: 11.00
+    . CFO: -214.96
+    . TOA: 429000.0
+    . CRC: 1
+    . SF: 10
+    . CR: 8
+    . sensor: 865
+    . --------------------------------

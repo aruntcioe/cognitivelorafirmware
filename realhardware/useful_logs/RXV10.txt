@@ -1,0 +1,1789 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x10cc
+load:0x403c8700,len:0xc2c
+load:0x403cb700,len:0x30c0
+entry 0x403c88b8
+
+======================================
+ AI Cognitive Radio Receiver
+======================================
+--------------------------------------
+Initializing DATA Radio...
+--------------------------------------
+Initialization Failed : -16
+DATA RADIO FAILED (Attempt 1/5)
+Retrying in 2 seconds...
+--------------------------------------
+Initializing DATA Radio...
+--------------------------------------
+Initialization Failed : -16
+DATA RADIO FAILED (Attempt 2/5)
+Retrying in 2 seconds...
+--------------------------------------
+Initializing DATA Radio...
+--------------------------------------
+Initialization Failed : -16
+DATA RADIO FAILED (Attempt 3/5)
+Retrying in 2 seconds...
+--------------------------------------
+Initializing DATA Radio...
+--------------------------------------
+DATA Radio Ready
+Frequency : 433000.00
+SF : 8
+CR : 4/5
+
+--------------------------------------
+Initializing CONTROL Radio...
+--------------------------------------
+CONTROL Radio Ready
+
+[FS] Logging dataset to /dataset.csv
+[FS] Existing rows preserved: yes (appending)
+
+Receiver Ready
+
+--- CSV DATASET OUTPUT START ---
+meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR,meanToA,label
+--------------------------------
+sequence Id: 0
+rxTimestamp: 10668
+txtimestamp: 2089
+RSSI: -105.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1356
+--------------------------------
+--------------------------------
+sequence Id: 1
+rxTimestamp: 11167
+txtimestamp: 2589
+RSSI: -104.00
+SNR: 10.75
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3749
+--------------------------------
+--------------------------------
+sequence Id: 2
+rxTimestamp: 11667
+txtimestamp: 3089
+RSSI: -105.00
+SNR: 11.00
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3392
+--------------------------------
+--------------------------------
+sequence Id: 3
+rxTimestamp: 12167
+txtimestamp: 3589
+RSSI: -105.00
+SNR: 11.50
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1112
+--------------------------------
+--------------------------------
+sequence Id: 4
+rxTimestamp: 12667
+txtimestamp: 4089
+RSSI: -104.00
+SNR: 11.25
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 790
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.24
+Mean SNR : 11.05
+Variance SNR : 0.09
+Mean ToA : 93000.00
+Mean CFO : -442.08
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.6,0.2,11.1,0.1,-442.1,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 5
+rxTimestamp: 13167
+txtimestamp: 4589
+RSSI: -105.00
+SNR: 10.75
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2013
+--------------------------------
+--------------------------------
+sequence Id: 6
+rxTimestamp: 13667
+txtimestamp: 5089
+RSSI: -105.00
+SNR: 11.25
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 929
+--------------------------------
+--------------------------------
+sequence Id: 7
+rxTimestamp: 14167
+txtimestamp: 5589
+RSSI: -104.00
+SNR: 11.25
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3297
+--------------------------------
+--------------------------------
+sequence Id: 8
+rxTimestamp: 14667
+txtimestamp: 6089
+RSSI: -105.00
+SNR: 11.00
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1698
+--------------------------------
+--------------------------------
+sequence Id: 9
+rxTimestamp: 15167
+txtimestamp: 6589
+RSSI: -105.00
+SNR: 11.50
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 232
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.80
+Variance RSSI : 0.16
+Mean SNR : 11.15
+Variance SNR : 0.07
+Mean ToA : 93000.00
+Mean CFO : -440.40
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.8,0.2,11.1,0.1,-440.4,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 10
+rxTimestamp: 15667
+txtimestamp: 7089
+RSSI: -105.00
+SNR: 10.75
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 495
+--------------------------------
+--------------------------------
+sequence Id: 11
+rxTimestamp: 16167
+txtimestamp: 7589
+RSSI: -104.00
+SNR: 11.00
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2844
+--------------------------------
+--------------------------------
+sequence Id: 12
+rxTimestamp: 16667
+txtimestamp: 8089
+RSSI: -104.00
+SNR: 10.75
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3578
+--------------------------------
+--------------------------------
+sequence Id: 13
+rxTimestamp: 17167
+txtimestamp: 8589
+RSSI: -105.00
+SNR: 10.75
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2510
+--------------------------------
+--------------------------------
+sequence Id: 14
+rxTimestamp: 17667
+txtimestamp: 9089
+RSSI: -105.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2009
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.24
+Mean SNR : 10.85
+Variance SNR : 0.02
+Mean ToA : 93000.00
+Mean CFO : -442.08
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.6,0.2,10.9,0.0,-442.1,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 15
+rxTimestamp: 18167
+txtimestamp: 9589
+RSSI: -105.00
+SNR: 11.25
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1904
+--------------------------------
+--------------------------------
+sequence Id: 16
+rxTimestamp: 18667
+txtimestamp: 10089
+RSSI: -106.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 757
+--------------------------------
+--------------------------------
+sequence Id: 17
+rxTimestamp: 19167
+txtimestamp: 10589
+RSSI: -105.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3810
+--------------------------------
+--------------------------------
+sequence Id: 18
+rxTimestamp: 19667
+txtimestamp: 11089
+RSSI: -105.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1919
+--------------------------------
+--------------------------------
+sequence Id: 19
+rxTimestamp: 20167
+txtimestamp: 11589
+RSSI: -104.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2613
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -105.00
+Variance RSSI : 0.40
+Mean SNR : 11.00
+Variance SNR : 0.03
+Mean ToA : 93000.00
+Mean CFO : -447.11
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-105.0,0.4,11.0,0.0,-447.1,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 20
+rxTimestamp: 20667
+txtimestamp: 12089
+RSSI: -104.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2810
+--------------------------------
+--------------------------------
+sequence Id: 21
+rxTimestamp: 21167
+txtimestamp: 12589
+RSSI: -104.00
+SNR: 11.25
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2410
+--------------------------------
+--------------------------------
+sequence Id: 22
+rxTimestamp: 21667
+txtimestamp: 13089
+RSSI: -104.00
+SNR: 11.25
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 489
+--------------------------------
+--------------------------------
+sequence Id: 23
+rxTimestamp: 22167
+txtimestamp: 13589
+RSSI: -104.00
+SNR: 11.25
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3764
+--------------------------------
+--------------------------------
+sequence Id: 24
+rxTimestamp: 22667
+txtimestamp: 14089
+RSSI: -105.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1686
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.20
+Variance RSSI : 0.16
+Mean SNR : 11.10
+Variance SNR : 0.04
+Mean ToA : 93000.00
+Mean CFO : -448.79
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.2,0.2,11.1,0.0,-448.8,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 25
+rxTimestamp: 23167
+txtimestamp: 14589
+RSSI: -104.00
+SNR: 11.25
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2576
+--------------------------------
+--------------------------------
+sequence Id: 26
+rxTimestamp: 23667
+txtimestamp: 15089
+RSSI: -104.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2814
+--------------------------------
+--------------------------------
+sequence Id: 27
+rxTimestamp: 24167
+txtimestamp: 15589
+RSSI: -105.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1470
+--------------------------------
+--------------------------------
+sequence Id: 28
+rxTimestamp: 24667
+txtimestamp: 16089
+RSSI: -104.00
+SNR: 10.25
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3141
+--------------------------------
+--------------------------------
+sequence Id: 29
+rxTimestamp: 25167
+txtimestamp: 16589
+RSSI: -104.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 619
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.20
+Variance RSSI : 0.16
+Mean SNR : 10.80
+Variance SNR : 0.11
+Mean ToA : 93000.00
+Mean CFO : -448.79
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.2,0.2,10.8,0.1,-448.8,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 30
+rxTimestamp: 25668
+txtimestamp: 17089
+RSSI: -105.00
+SNR: 11.50
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1251
+--------------------------------
+--------------------------------
+sequence Id: 31
+rxTimestamp: 26167
+txtimestamp: 17589
+RSSI: -104.00
+SNR: 11.25
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 531
+--------------------------------
+--------------------------------
+sequence Id: 32
+rxTimestamp: 26667
+txtimestamp: 18089
+RSSI: -104.00
+SNR: 11.00
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1288
+--------------------------------
+--------------------------------
+sequence Id: 33
+rxTimestamp: 27167
+txtimestamp: 18589
+RSSI: -104.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2911
+--------------------------------
+--------------------------------
+sequence Id: 34
+rxTimestamp: 27667
+txtimestamp: 19089
+RSSI: -105.00
+SNR: 11.25
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 4043
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.40
+Variance RSSI : 0.24
+Mean SNR : 11.15
+Variance SNR : 0.07
+Mean ToA : 93000.00
+Mean CFO : -447.11
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.4,0.2,11.1,0.1,-447.1,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 35
+rxTimestamp: 28168
+txtimestamp: 19589
+RSSI: -105.00
+SNR: 10.75
+CFO: -440.40
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1054
+--------------------------------
+--------------------------------
+sequence Id: 36
+rxTimestamp: 28667
+txtimestamp: 20089
+RSSI: -105.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 229
+--------------------------------
+--------------------------------
+sequence Id: 37
+rxTimestamp: 29167
+txtimestamp: 20589
+RSSI: -105.00
+SNR: 11.50
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2066
+--------------------------------
+--------------------------------
+sequence Id: 38
+rxTimestamp: 29667
+txtimestamp: 21089
+RSSI: -105.00
+SNR: 10.75
+CFO: -448.79
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1788
+--------------------------------
+--------------------------------
+sequence Id: 39
+rxTimestamp: 30168
+txtimestamp: 21589
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 171
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -105.00
+Variance RSSI : 0.00
+Mean SNR : 10.95
+Variance SNR : 0.09
+Mean ToA : 93000.00
+Mean CFO : -450.47
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-105.0,0.0,10.9,0.1,-450.5,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 40
+rxTimestamp: 30668
+txtimestamp: 22089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2626
+--------------------------------
+--------------------------------
+sequence Id: 41
+rxTimestamp: 31168
+txtimestamp: 22589
+RSSI: -104.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3749
+--------------------------------
+--------------------------------
+sequence Id: 42
+rxTimestamp: 31668
+txtimestamp: 23089
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2186
+--------------------------------
+--------------------------------
+sequence Id: 43
+rxTimestamp: 32168
+txtimestamp: 23589
+RSSI: -105.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3171
+--------------------------------
+--------------------------------
+sequence Id: 44
+rxTimestamp: 32668
+txtimestamp: 24089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 446
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.80
+Variance RSSI : 0.16
+Mean SNR : 10.95
+Variance SNR : 0.03
+Mean ToA : 93000.00
+Mean CFO : -457.18
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.8,0.2,10.9,0.0,-457.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 45
+rxTimestamp: 33168
+txtimestamp: 24589
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3935
+--------------------------------
+--------------------------------
+sequence Id: 46
+rxTimestamp: 33668
+txtimestamp: 25089
+RSSI: -105.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 448
+--------------------------------
+--------------------------------
+sequence Id: 47
+rxTimestamp: 34168
+txtimestamp: 25589
+RSSI: -104.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3914
+--------------------------------
+--------------------------------
+sequence Id: 48
+rxTimestamp: 34668
+txtimestamp: 26089
+RSSI: -106.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 426
+--------------------------------
+--------------------------------
+sequence Id: 49
+rxTimestamp: 35168
+txtimestamp: 26589
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3328
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.80
+Variance RSSI : 0.56
+Mean SNR : 11.10
+Variance SNR : 0.02
+Mean ToA : 93000.00
+Mean CFO : -458.86
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.8,0.6,11.1,0.0,-458.9,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 50
+rxTimestamp: 35668
+txtimestamp: 27089
+RSSI: -105.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 186
+--------------------------------
+--------------------------------
+sequence Id: 51
+rxTimestamp: 36168
+txtimestamp: 27589
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 592
+--------------------------------
+--------------------------------
+sequence Id: 52
+rxTimestamp: 36668
+txtimestamp: 28089
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 636
+--------------------------------
+--------------------------------
+sequence Id: 53
+rxTimestamp: 37168
+txtimestamp: 28589
+RSSI: -104.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2573
+--------------------------------
+--------------------------------
+sequence Id: 54
+rxTimestamp: 37668
+txtimestamp: 29089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3165
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.24
+Mean SNR : 11.05
+Variance SNR : 0.03
+Mean ToA : 93000.00
+Mean CFO : -457.18
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.6,0.2,11.1,0.0,-457.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 55
+rxTimestamp: 38168
+txtimestamp: 29589
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1101
+--------------------------------
+--------------------------------
+sequence Id: 56
+rxTimestamp: 38668
+txtimestamp: 30089
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3060
+--------------------------------
+--------------------------------
+sequence Id: 57
+rxTimestamp: 39168
+txtimestamp: 30589
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3674
+--------------------------------
+--------------------------------
+sequence Id: 58
+rxTimestamp: 39668
+txtimestamp: 31089
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2739
+--------------------------------
+--------------------------------
+sequence Id: 59
+rxTimestamp: 40168
+txtimestamp: 31589
+RSSI: -105.00
+SNR: 10.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3447
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.24
+Mean SNR : 11.05
+Variance SNR : 0.16
+Mean ToA : 93000.00
+Mean CFO : -457.18
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.6,0.2,11.1,0.2,-457.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 60
+rxTimestamp: 40668
+txtimestamp: 32089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1060
+--------------------------------
+--------------------------------
+sequence Id: 61
+rxTimestamp: 41168
+txtimestamp: 32589
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2921
+--------------------------------
+--------------------------------
+sequence Id: 62
+rxTimestamp: 41668
+txtimestamp: 33089
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2807
+--------------------------------
+--------------------------------
+sequence Id: 63
+rxTimestamp: 42168
+txtimestamp: 33589
+RSSI: -104.00
+SNR: 11.50
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 391
+--------------------------------
+--------------------------------
+sequence Id: 64
+rxTimestamp: 42668
+txtimestamp: 34089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3880
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.24
+Mean SNR : 11.20
+Variance SNR : 0.04
+Mean ToA : 93000.00
+Mean CFO : -457.18
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.6,0.2,11.2,0.0,-457.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 65
+rxTimestamp: 43168
+txtimestamp: 34589
+RSSI: -104.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 603
+--------------------------------
+--------------------------------
+sequence Id: 66
+rxTimestamp: 43668
+txtimestamp: 35089
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3363
+--------------------------------
+--------------------------------
+sequence Id: 67
+rxTimestamp: 44168
+txtimestamp: 35589
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 343
+--------------------------------
+--------------------------------
+sequence Id: 68
+rxTimestamp: 44668
+txtimestamp: 36089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 261
+--------------------------------
+--------------------------------
+sequence Id: 69
+rxTimestamp: 45168
+txtimestamp: 36589
+RSSI: -104.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3442
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.40
+Variance RSSI : 0.24
+Mean SNR : 11.00
+Variance SNR : 0.03
+Mean ToA : 93000.00
+Mean CFO : -458.86
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.4,0.2,11.0,0.0,-458.9,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 70
+rxTimestamp: 45668
+txtimestamp: 37089
+RSSI: -105.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1339
+--------------------------------
+--------------------------------
+sequence Id: 71
+rxTimestamp: 46168
+txtimestamp: 37589
+RSSI: -105.00
+SNR: 10.75
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 473
+--------------------------------
+--------------------------------
+sequence Id: 72
+rxTimestamp: 46668
+txtimestamp: 38089
+RSSI: -105.00
+SNR: 10.75
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1719
+--------------------------------
+--------------------------------
+sequence Id: 73
+rxTimestamp: 47168
+txtimestamp: 38589
+RSSI: -105.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3307
+--------------------------------
+--------------------------------
+sequence Id: 74
+rxTimestamp: 47668
+txtimestamp: 39089
+RSSI: -105.00
+SNR: 11.00
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 21
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -105.00
+Variance RSSI : 0.00
+Mean SNR : 10.90
+Variance SNR : 0.02
+Mean ToA : 93000.00
+Mean CFO : -463.89
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-105.0,0.0,10.9,0.0,-463.9,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 75
+rxTimestamp: 48168
+txtimestamp: 39589
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2196
+--------------------------------
+--------------------------------
+sequence Id: 76
+rxTimestamp: 48668
+txtimestamp: 40089
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1556
+--------------------------------
+--------------------------------
+sequence Id: 77
+rxTimestamp: 49168
+txtimestamp: 40589
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 408
+--------------------------------
+--------------------------------
+sequence Id: 78
+rxTimestamp: 49668
+txtimestamp: 41089
+RSSI: -105.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 159
+--------------------------------
+--------------------------------
+sequence Id: 79
+rxTimestamp: 50168
+txtimestamp: 41589
+RSSI: -104.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2470
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.20
+Variance RSSI : 0.16
+Mean SNR : 11.05
+Variance SNR : 0.04
+Mean ToA : 93000.00
+Mean CFO : -460.53
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.2,0.2,11.1,0.0,-460.5,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 80
+rxTimestamp: 50668
+txtimestamp: 42089
+RSSI: -105.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3493
+--------------------------------
+--------------------------------
+sequence Id: 81
+rxTimestamp: 51168
+txtimestamp: 42589
+RSSI: -104.00
+SNR: 10.50
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 792
+--------------------------------
+--------------------------------
+sequence Id: 82
+rxTimestamp: 51668
+txtimestamp: 43089
+RSSI: -105.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1989
+--------------------------------
+--------------------------------
+sequence Id: 83
+rxTimestamp: 52168
+txtimestamp: 43589
+RSSI: -104.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 4024
+--------------------------------
+--------------------------------
+sequence Id: 84
+rxTimestamp: 52668
+txtimestamp: 44089
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3472
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.40
+Variance RSSI : 0.24
+Mean SNR : 10.85
+Variance SNR : 0.04
+Mean ToA : 93000.00
+Mean CFO : -462.21
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.4,0.2,10.9,0.0,-462.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 85
+rxTimestamp: 53168
+txtimestamp: 44589
+RSSI: -105.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1440
+--------------------------------
+--------------------------------
+sequence Id: 86
+rxTimestamp: 53668
+txtimestamp: 45089
+RSSI: -106.00
+SNR: 10.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 982
+--------------------------------
+--------------------------------
+sequence Id: 87
+rxTimestamp: 54168
+txtimestamp: 45589
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3691
+--------------------------------
+--------------------------------
+sequence Id: 88
+rxTimestamp: 54668
+txtimestamp: 46089
+RSSI: -104.00
+SNR: 10.50
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3356
+--------------------------------
+--------------------------------
+sequence Id: 89
+rxTimestamp: 55168
+txtimestamp: 46589
+RSSI: -104.00
+SNR: 11.25
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 779
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.60
+Variance RSSI : 0.64
+Mean SNR : 10.90
+Variance SNR : 0.09
+Mean ToA : 93000.00
+Mean CFO : -457.18
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.6,0.6,10.9,0.1,-457.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 90
+rxTimestamp: 55669
+txtimestamp: 47089
+RSSI: -105.00
+SNR: 9.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 324
+--------------------------------
+--------------------------------
+sequence Id: 91
+rxTimestamp: 56168
+txtimestamp: 47589
+RSSI: -105.00
+SNR: 10.75
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 165
+--------------------------------
+--------------------------------
+sequence Id: 92
+rxTimestamp: 56668
+txtimestamp: 48089
+RSSI: -105.00
+SNR: 9.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2749
+--------------------------------
+--------------------------------
+sequence Id: 93
+rxTimestamp: 57168
+txtimestamp: 48589
+RSSI: -105.00
+SNR: 10.50
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2243
+--------------------------------
+--------------------------------
+sequence Id: 94
+rxTimestamp: 57668
+txtimestamp: 49089
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2185
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.80
+Variance RSSI : 0.16
+Mean SNR : 10.35
+Variance SNR : 0.26
+Mean ToA : 93000.00
+Mean CFO : -462.21
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.8,0.2,10.4,0.3,-462.2,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 95
+rxTimestamp: 58169
+txtimestamp: 49589
+RSSI: -104.00
+SNR: 11.25
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2295
+--------------------------------
+--------------------------------
+sequence Id: 96
+rxTimestamp: 58668
+txtimestamp: 50089
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1845
+--------------------------------
+--------------------------------
+sequence Id: 97
+rxTimestamp: 59168
+txtimestamp: 50589
+RSSI: -104.00
+SNR: 11.25
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2464
+--------------------------------
+--------------------------------
+sequence Id: 98
+rxTimestamp: 59668
+txtimestamp: 51089
+RSSI: -105.00
+SNR: 11.25
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1922
+--------------------------------
+--------------------------------
+sequence Id: 99
+rxTimestamp: 60169
+txtimestamp: 51589
+RSSI: -104.00
+SNR: 11.25
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 428
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.20
+Variance RSSI : 0.16
+Mean SNR : 11.20
+Variance SNR : 0.01
+Mean ToA : 93000.00
+Mean CFO : -465.57
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.2,0.2,11.2,0.0,-465.6,0.000,0,8,5,93000.0,0
+
+[AI] Normal Channel
+--------------------------------
+sequence Id: 100
+rxTimestamp: 60669
+txtimestamp: 52089
+RSSI: -104.00
+SNR: 11.00
+CFO: -465.57
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1525
+--------------------------------
+--------------------------------
+sequence Id: 101
+rxTimestamp: 61169
+txtimestamp: 52589
+RSSI: -105.00
+SNR: 9.75
+CFO: -457.18
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2628
+--------------------------------
+[DATA] RX Error : -24
+[DATA] RX Error : -24
+[DATA] Implausible packet rejected - Seq=2333268818 Sensor=22904
+[DATA] Implausible packet rejected - Seq=0 Sensor=0
+[DATA] CRC Failure
+[FS] CSV file closed and saved.
+
+=====================================================
+SYSTEM HALTED - DATA radio (RX) malfunction detected (connection/antenna/hardware).
+Last known-good sequence/ID : 101
+All TX/RX operations stopped. Power-cycle to recover.
+=====================================================

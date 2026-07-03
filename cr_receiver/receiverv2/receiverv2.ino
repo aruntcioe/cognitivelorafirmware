@@ -37,7 +37,7 @@
 // FEATURE WINDOW SIZE
 //======================================================================
 #define FEATURE_WINDOW_SIZE 5
-#define DATA_PACKET_MAGIC 0xDEADBEEF;
+#define DATA_PACKET_MAGIC 0xDEADBEEF
 
 //======================================================================
 // RADIO HEALTH / FAULT-HALT STATE
@@ -64,6 +64,8 @@ uint8_t currentCR = 5;
 const float CONTROL_FREQUENCY = 445.0;
 const uint8_t CONTROL_SF = 12;
 const uint8_t CONTROL_CR = 8;
+
+bool featureCollectionEnabled = true;
 
 //======================================================================
 // SHARED SPI BUS
@@ -149,7 +151,7 @@ ControlPacket pendingControlPacket;
 uint32_t controlSentTime   = 0;
 uint8_t  controlRetryCount = 0;
 
-const uint8_t  CONTROL_MAX_RETRIES    = 3;
+const uint8_t  CONTROL_MAX_RETRIES    = 4;
 const uint32_t CONTROL_ACK_TIMEOUT_MS = 1500; // must cover SF12 command+ack air time
 
 //======================================================================
@@ -239,21 +241,58 @@ void setup() {
 
     sharedSPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, -1);
 
-    if(!initializeDataRadio()) {
-        Serial.println("DATA RADIO FAILED");
-        while(true);
-    }
+    const int MAX_RETRIES = 5;
+    int retryCount = 0;
 
-    if(!initializeControlRadio()) {
-        Serial.println("CONTROL RADIO FAILED");
-        while(true);
-    }
+    // --- INITIALIZE DATA RADIO (Max 5 Retries) ---
+    while(!initializeDataRadio()) {
+        retryCount++;
+        digitalWrite(LED_ERROR, HIGH); // Visual error warning
+        Serial.print("DATA RADIO FAILED (Attempt ");
+        Serial.print(retryCount);
+        Serial.print("/");
+        Serial.print(MAX_RETRIES);
+        Serial.println(")");
 
+        if(retryCount >= MAX_RETRIES) {
+            Serial.println("\n[FATAL ERROR] Data Radio failed to initialize 5 times. Halting execution.");
+            while(true); // Lock up securely here
+        }
+
+        Serial.println("Retrying in 2 seconds...");
+        delay(2000);
+    }
+    digitalWrite(LED_ERROR, LOW); // Clear error LED on success
+    retryCount = 0;               // Reset counter for the next radio
+
+    // --- INITIALIZE CONTROL RADIO (Max 5 Retries) ---
+    while(!initializeControlRadio()) {
+        retryCount++;
+        digitalWrite(LED_ERROR, HIGH);
+        Serial.print("CONTROL RADIO FAILED (Attempt ");
+        Serial.print(retryCount);
+        Serial.print("/");
+        Serial.print(MAX_RETRIES);
+        Serial.println(")");
+
+        if(retryCount >= MAX_RETRIES) {
+            Serial.println("\n[FATAL ERROR] Control Radio failed to initialize 5 times. Halting execution.");
+            while(true); 
+        }
+
+        Serial.println("Retrying in 2 seconds...");
+        delay(2000);
+    }
+    digitalWrite(LED_ERROR, LOW); 
+
+    // --- SET UP INTERRUPTS ---
     dataRadio.startReceive();
-    dataRadio.setDio0Action(onDataDio0,RISING);
-    Serial.println("\nReceiver Ready\n");
+    dataRadio.setDio0Action(onDataDio0, RISING);
+    
     controlRadio.startReceive();
-    controlRadio.setDio0Action(onCtrlDio0,RISING);
+    controlRadio.setDio0Action(onCtrlDio0, RISING);
+
+    Serial.println("\nReceiver Ready\n");
 
     // Print CSV Header to easily capture into terminal files
     Serial.println("--- CSV DATASET OUTPUT START ---");
@@ -396,6 +435,7 @@ dataPacketFlag = false;
         previousSequence = packet.sequence;
     }
 
+if(featureCollectionEnabled){
     featureWindow[windowIndex].sequence = packet.sequence;
     featureWindow[windowIndex].timestamp = packet.timestamp;
     featureWindow[windowIndex].rssi = dataRadio.getRSSI();
@@ -418,9 +458,18 @@ Serial.print("SF: "); Serial.println(currentSF);
 Serial.print("CR: "); Serial.println(currentCR);
 Serial.print("sensor: "); Serial.println(packet.sensorValue);
 Serial.println("--------------------------------");
-
     windowIndex++;
     packetsInWindow++;
+}
+else{
+    Serial.println("--------------------------------");
+Serial.print("Feature collection is halted: ");
+Serial.print("sequence Id: "); Serial.println(packet.sequence);
+Serial.print("rxTimestamp: "); Serial.println(millis());                         // rxTimestampMs
+Serial.print("txtimestamp: "); Serial.println(packet.timestamp); 
+Serial.print("sensor: "); Serial.println(packet.sensorValue);
+Serial.println("--------------------------------");
+}
 
     if(windowIndex >= FEATURE_WINDOW_SIZE) {
         processFeatureWindow();
@@ -497,28 +546,77 @@ void extractFeatures() {
 //======================================================================
 // DATA LOGGING LAYER (CSV Generator)
 //======================================================================
+//======================================================================
+// DATA LOGGING LAYER (CSV Generator) - streams over USB serial only
+//======================================================================
 void logFeatureVectorCSV(String label) {
-    // Prints a single clean line of comma-separated values to the terminal
-    Serial.print(features.meanRSSI, 1); Serial.print(",");
-    Serial.print(features.varRSSI, 1);  Serial.print(",");
-    Serial.print(features.meanSNR, 1);   Serial.print(",");
-    Serial.print(features.varSNR, 1);   Serial.print(",");
-    Serial.print(features.CFO, 1);      Serial.print(",");
-    Serial.print(features.PLR, 3);      Serial.print(",");
-    Serial.print(features.consecutiveCRCFailures); Serial.print(",");
-    Serial.print(features.currentSF);   Serial.print(",");
-    Serial.print(features.currentCR);   Serial.print(",");
-    Serial.print(features.meanToA, 1);  Serial.print(",");
-    Serial.println(label); 
+    String row = String(features.meanRSSI, 1) + "," +
+                 String(features.varRSSI, 1)  + "," +
+                 String(features.meanSNR, 1)  + "," +
+                 String(features.varSNR, 1)   + "," +
+                 String(features.CFO, 1)      + "," +
+                 String(features.PLR, 3)      + "," +
+                 String(features.consecutiveCRCFailures) + "," +
+                 String(features.currentSF)   + "," +
+                 String(features.currentCR)   + "," +
+                 String(features.meanToA, 1)  + "," +
+                 label;
+
+    Serial.print("CSVROW,");     // tag so the PC script can pick out data rows
+    Serial.println(row);
 }
 
 //======================================================================
 // RUN AI INFERENCE
 //======================================================================
+//======================================================================
+// TEMPORARY THRESHOLD LABELER (NOT REAL AI)
+//======================================================================
+// This exists ONLY to auto-label the CSV during controlled data-collection
+// runs so all 4 classes get exercised and captured on disk. It is a stand-in
+// for the real classifier - swap this out once you're training on collected
+// data. Thresholds below are placeholders; tune them against your actual
+// captured RSSI/SNR/PLR distributions for the test environment you're in.
+//======================================================================
+//======================================================================
+// CALIBRATED COGNITIVE RADIO THRESHOLDS (SX1278 LoRa)
+//======================================================================
+// Jamming: Low SNR combined with high/normal RSSI indicates active interference
+const float THRESH_JAM_SNR        = 10.0f;  // Below this (e.g. -12dB to -20dB), noise/interference is overriding the signal
+
+// Fading: Signal attenuation due to distance or physical obstructions
+const float THRESH_FADE_RSSI      = -105.0f; // Standard SX1278 sensitivity limit starts showing heavy drops here
+const float THRESH_FADE_PLR       = 0.25f;   // Packet Loss Rate > 25% indicates a dropping, unstable fading link
+
+// Excellent Link: High-quality line-of-sight conditions allowing high throughput
+const float THRESH_EXCELLENT_RSSI = -80.0f;  // Strong signal level (closer to 0 is stronger, e.g., -70dB is excellent)
+const float THRESH_EXCELLENT_SNR  = 8.0f;   // SX1278 SNR realistically saturates near +10dB; 8.0dB is pristine
+
 int runInference() {
-    if(features.meanSNR < 10)    return 1; // Jammer
-    if(features.meanRSSI < -101) return 2; // Weak Link
-    return 0;                              // Normal
+    // --- Class 1: Jammed / Primary User Active ---
+    // Collapsed SNR relative to noise floor is the signature of jamming/
+    // co-channel interference, independent of RSSI.
+    if (features.meanSNR < THRESH_JAM_SNR) {
+        return 1;
+    }
+
+    // --- Class 2: Severe Link Fading / High Path Loss ---
+    // Either weak received power OR high packet loss (which weak power
+    // alone doesn't always capture, e.g. multipath fading) counts.
+    if (features.meanRSSI < THRESH_FADE_RSSI || features.PLR > THRESH_FADE_PLR) {
+        return 2;
+    }
+
+    // --- Class 3: Exceptional / High Margin Link ---
+    // Strong signal AND clean SNR - safe to shrink SF/CR for throughput.
+    if (features.meanRSSI > THRESH_EXCELLENT_RSSI &&
+        features.meanSNR  > THRESH_EXCELLENT_SNR) {
+        return 3;
+    }
+
+    // --- Class 0: Clear / Nominal ---
+    // Doesn't fall into any of the above buckets - operate as-is.
+    return 0;
 }
 //======================================================================
 // HALT SYSTEM ON RADIO FAULT
@@ -566,6 +664,7 @@ void transmitPendingControlPacket() {
         Serial.print("[CTRL] TX Failed : ");
         Serial.println(state);
     }
+   featureCollectionEnabled = false;
    ctrlPacketFlag = false;   // NEW: discard the self-triggered TxDone interrupt from this transmit
     controlRadio.startReceive();
     controlSentTime = millis();
@@ -608,6 +707,7 @@ void serviceControlPlane() {
 
         if (state == RADIOLIB_ERR_NONE && ack.commandID == pendingControlPacket.commandID) {
             Serial.println("[CTRL] ACK Received");
+            featureCollectionEnabled = true;
             controlRadioFailStreak = 0;
             lastGoodAckCommandID = ack.commandID;
             if (ack.applied) {
@@ -629,6 +729,7 @@ void serviceControlPlane() {
      if (controlRetryCount >= CONTROL_MAX_RETRIES) {
             Serial.println("[CTRL] ACK Timeout - giving up after max retries.");
             controlTxState = CTRL_IDLE;
+            featureCollectionEnabled = true;
             controlRadioFailStreak++;
             if (controlRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
                 haltSystem("CONTROL radio (RX)", lastGoodAckCommandID);

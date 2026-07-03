@@ -1,0 +1,482 @@
+
+======================================
+ AI Cognitive Radio Receiver
+======================================
+--------------------------------------
+Initializing DATA Radio...
+--------------------------------------
+DATA Radio Ready
+Frequency : 433000.00
+SF : 8
+CR : 4/5
+
+--------------------------------------
+Initializing CONTROL Radio...
+--------------------------------------
+CONTROL Radio Ready
+
+
+Receiver Ready
+
+--- CSV DATASET OUTPUT START ---
+meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR,meanToA,label
+--------------------------------
+sequence Id: 0
+rxTimestamp: 6999
+txtimestamp: 500
+RSSI: -105.00
+SNR: 11.00
+CFO: -499.12
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 2357
+--------------------------------
+--------------------------------
+sequence Id: 1
+rxTimestamp: 7498
+txtimestamp: 1000
+RSSI: -104.00
+SNR: 11.75
+CFO: -499.12
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1048
+--------------------------------
+--------------------------------
+sequence Id: 2
+rxTimestamp: 7999
+txtimestamp: 1500
+RSSI: -105.00
+SNR: 11.50
+CFO: -499.12
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1647
+--------------------------------
+--------------------------------
+sequence Id: 3
+rxTimestamp: 8499
+txtimestamp: 2000
+RSSI: -105.00
+SNR: 11.00
+CFO: -499.12
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 3896
+--------------------------------
+--------------------------------
+sequence Id: 4
+rxTimestamp: 8999
+txtimestamp: 2500
+RSSI: -105.00
+SNR: 10.50
+CFO: -507.51
+TOA: 93000.0
+CRC: 1
+SF: 8
+CR: 5
+sensor: 1299
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.80
+Variance RSSI : 0.16
+Mean SNR : 11.15
+Variance SNR : 0.19
+Mean ToA : 93000.00
+Mean CFO : -500.80
+PLR : 0.00
+CRC Failures : 0
+Current SF : 8
+Current CR : 5
+====================================
+-104.8,0.2,11.1,0.2,-500.8,0.000,0,8,5,93000.0,2
+
+[AI] Weak Link
+Increasing Robustness
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+Feature collection is halted: --------------------------------
+[CTRL] ACK Received
+Receiver Reconfigured
+--------------------------------
+sequence Id: 8
+rxTimestamp: 12773
+txtimestamp: 5934
+RSSI: -105.00
+SNR: 10.25
+CFO: -502.27
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 2208
+--------------------------------
+--------------------------------
+sequence Id: 9
+rxTimestamp: 13273
+txtimestamp: 6434
+RSSI: -105.00
+SNR: 10.25
+CFO: -500.17
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3570
+--------------------------------
+--------------------------------
+sequence Id: 10
+rxTimestamp: 13773
+txtimestamp: 6934
+RSSI: -105.00
+SNR: 10.25
+CFO: -498.07
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3916
+--------------------------------
+--------------------------------
+sequence Id: 11
+rxTimestamp: 14273
+txtimestamp: 7434
+RSSI: -105.00
+SNR: 10.25
+CFO: -495.98
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 4036
+--------------------------------
+--------------------------------
+sequence Id: 12
+rxTimestamp: 14773
+txtimestamp: 7934
+RSSI: -104.00
+SNR: 10.00
+CFO: -493.88
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 2155
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -104.80
+Variance RSSI : 0.16
+Mean SNR : 10.20
+Variance SNR : 0.01
+Mean ToA : 429000.00
+Mean CFO : -498.07
+PLR : 0.29
+CRC Failures : 0
+Current SF : 10
+Current CR : 8
+====================================
+-104.8,0.2,10.2,0.0,-498.1,0.286,0,10,8,429000.0,2
+
+[AI] Weak Link
+Increasing Robustness
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+Feature collection is halted: --------------------------------
+[CTRL] ACK Received
+Receiver Reconfigured
+--------------------------------
+sequence Id: 17
+rxTimestamp: 18741
+txtimestamp: 11901
+RSSI: -105.00
+SNR: 12.00
+CFO: -500.17
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 1565
+--------------------------------
+--------------------------------
+sequence Id: 18
+rxTimestamp: 19240
+txtimestamp: 12401
+RSSI: -105.00
+SNR: 11.75
+CFO: -500.17
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3935
+--------------------------------
+--------------------------------
+sequence Id: 19
+rxTimestamp: 19740
+txtimestamp: 12901
+RSSI: -105.00
+SNR: 12.25
+CFO: -500.17
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3526
+--------------------------------
+--------------------------------
+sequence Id: 20
+rxTimestamp: 20240
+txtimestamp: 13401
+RSSI: -105.00
+SNR: 11.75
+CFO: -498.07
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 4022
+--------------------------------
+--------------------------------
+sequence Id: 21
+rxTimestamp: 20740
+txtimestamp: 13901
+RSSI: -105.00
+SNR: 11.00
+CFO: -498.07
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 827
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -105.00
+Variance RSSI : 0.00
+Mean SNR : 11.75
+Variance SNR : 0.17
+Mean ToA : 429000.00
+Mean CFO : -499.33
+PLR : 0.37
+CRC Failures : 0
+Current SF : 10
+Current CR : 8
+====================================
+-105.0,0.0,11.8,0.2,-499.3,0.375,0,10,8,429000.0,2
+
+[AI] Weak Link
+Increasing Robustness
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+Feature collection is halted: --------------------------------
+[CTRL] ACK Received
+Receiver Reconfigured
+--------------------------------
+sequence Id: 26
+rxTimestamp: 24712
+txtimestamp: 17872
+RSSI: -106.00
+SNR: 13.25
+CFO: -495.98
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 1926
+--------------------------------
+--------------------------------
+sequence Id: 27
+rxTimestamp: 25211
+txtimestamp: 18372
+RSSI: -105.00
+SNR: 13.75
+CFO: -493.88
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 413
+--------------------------------
+--------------------------------
+sequence Id: 28
+rxTimestamp: 25711
+txtimestamp: 18872
+RSSI: -105.00
+SNR: 13.00
+CFO: -489.68
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 155
+--------------------------------
+--------------------------------
+sequence Id: 29
+rxTimestamp: 26211
+txtimestamp: 19372
+RSSI: -106.00
+SNR: 13.25
+CFO: -487.59
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 3990
+--------------------------------
+--------------------------------
+sequence Id: 30
+rxTimestamp: 26711
+txtimestamp: 19872
+RSSI: -105.00
+SNR: 13.50
+CFO: -483.39
+TOA: 429000.0
+CRC: 1
+SF: 10
+CR: 8
+sensor: 0
+--------------------------------
+
+=======================================
+ Feature Window Complete
+=======================================
+
+========== FEATURE VECTOR ==========
+Mean RSSI : -105.40
+Variance RSSI : 0.24
+Mean SNR : 13.35
+Variance SNR : 0.07
+Mean ToA : 429000.00
+Mean CFO : -490.10
+PLR : 0.37
+CRC Failures : 0
+Current SF : 10
+Current CR : 8
+====================================
+-105.4,0.2,13.4,0.1,-490.1,0.375,0,10,8,429000.0,2
+
+[AI] Weak Link
+Increasing Robustness
+
+[CTRL] Sending command (attempt 1/3)...
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+[CTRL] ACK Timeout - retrying...
+
+[CTRL] Sending command (attempt 2/3)...
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+[CTRL] ACK Timeout - retrying...
+
+[CTRL] Sending command (attempt 3/3)...
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+[CTRL] ACK Timeout - giving up after max retries.
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+--------------------------------
+Feature collection is halted: --------------------------------
+[DATA] RX Error : -24
+[DATA] CRC Failure
+[DATA] Implausible packet rejected - Seq=0 Sensor=0
+[DATA] Implausible packet rejected - Seq=0 Sensor=0
+[DATA] Implausible packet rejected - Seq=0 Sensor=0
+
+=====================================================
+SYSTEM HALTED - DATA radio (RX) malfunction detected (connection/antenna/hardware).
+Last known-good sequence/ID : 79
+All TX/RX operations stopped. Power-cycle to recover.
+=====================================================
