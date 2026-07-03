@@ -37,7 +37,20 @@
 // FEATURE WINDOW SIZE
 //======================================================================
 #define FEATURE_WINDOW_SIZE 5
+#define DATA_PACKET_MAGIC 0xDEADBEEF;
 
+//======================================================================
+// RADIO HEALTH / FAULT-HALT STATE
+//======================================================================
+const uint8_t RADIO_FAULT_THRESHOLD = 5;   // consecutive failures before halt
+
+uint8_t  dataRadioFailStreak    = 0;
+uint8_t  controlRadioFailStreak = 0;
+
+uint32_t lastGoodRxSequence     = 0;       // last data packet successfully received
+uint32_t lastGoodAckCommandID   = 0;       // last control command successfully ACKed
+
+bool systemHalted = false;
 //======================================================================
 // RADIO CONFIGURATION
 //======================================================================
@@ -76,6 +89,7 @@ enum CommandType {
 // DATA PACKET
 //======================================================================
 struct DataPacket {
+    uint32_t magic; 
     uint32_t sequence;
     uint32_t timestamp;
     uint16_t sensorValue;
@@ -126,6 +140,25 @@ uint16_t crcFailures = 0;
 uint32_t commandCounter = 0;
 
 //======================================================================
+// NON-BLOCKING CONTROL PLANE STATE
+//======================================================================
+enum ControlTxState { CTRL_IDLE, CTRL_AWAITING_ACK };
+ControlTxState controlTxState = CTRL_IDLE;
+
+ControlPacket pendingControlPacket;
+uint32_t controlSentTime   = 0;
+uint8_t  controlRetryCount = 0;
+
+const uint8_t  CONTROL_MAX_RETRIES    = 3;
+const uint32_t CONTROL_ACK_TIMEOUT_MS = 1500; // must cover SF12 command+ack air time
+
+//======================================================================
+// DIO0 INTERRUPT FLAGS (replaces digitalRead polling)
+//======================================================================
+volatile bool dataPacketFlag = false;
+volatile bool ctrlPacketFlag = false;
+
+//======================================================================
 // FEATURE VECTOR
 //======================================================================
 struct FeatureVector {
@@ -164,13 +197,29 @@ void processFeatureWindow();
 void extractFeatures();
 int runInference();
 void logFeatureVectorCSV(String label);
-void sendControlPacket(uint8_t command, uint32_t frequency, uint8_t sf, uint8_t cr);
-bool waitForControlAck();
+
 float calculateToA();
 float readFrequencyError();
 void applyReceiverConfiguration(uint32_t frequency, uint8_t sf, uint8_t cr);
 void executeDecision(int prediction);
 
+void sendControlCommand(uint8_t command, uint32_t frequency, uint8_t sf, uint8_t cr);
+void transmitPendingControlPacket();
+void serviceControlPlane();
+
+//======================================================================
+// PACKET VALIDITY CHECK
+//======================================================================
+bool isPacketPlausible(const DataPacket& pkt) {
+    return pkt.magic == DATA_PACKET_MAGIC;
+}
+void IRAM_ATTR onDataDio0() {
+    dataPacketFlag = true;
+}
+
+void IRAM_ATTR onCtrlDio0() {
+    ctrlPacketFlag = true;
+}
 //======================================================================
 // SETUP
 //======================================================================
@@ -201,7 +250,10 @@ void setup() {
     }
 
     dataRadio.startReceive();
+    dataRadio.setDio0Action(onDataDio0,RISING);
     Serial.println("\nReceiver Ready\n");
+    controlRadio.startReceive();
+    controlRadio.setDio0Action(onCtrlDio0,RISING);
 
     // Print CSV Header to easily capture into terminal files
     Serial.println("--- CSV DATASET OUTPUT START ---");
@@ -274,23 +326,30 @@ float calculateToA() {
 }
 
 float readFrequencyError() {
-    return 0.0; // Place holder for direct register access in Part 5
+return dataRadio.getFrequencyError();
 }
 
 //======================================================================
 // RECEIVE DATA PACKET
 //======================================================================
 void receiveDataPacket() {
-    if(!dataRadio.isPacketReceived())
-        return;
+        if (!dataPacketFlag) {
+         return;
+        }
+dataPacketFlag = false;
 
-    DataPacket packet;
+   DataPacket packet = {};
     int state = dataRadio.readData((uint8_t*)&packet, sizeof(packet));
 
-    if(state == RADIOLIB_ERR_CRC_MISMATCH) {
+ if(state == RADIOLIB_ERR_CRC_MISMATCH) {
         Serial.println("[DATA] CRC Failure");
         crcFailuresWindow++;
         consecutiveCRCFailures++;
+        dataRadioFailStreak++;
+        if (dataRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
+            haltSystem("DATA radio (RX)", lastGoodRxSequence);
+            return;
+        }
         dataRadio.startReceive();
         return;
     }
@@ -298,11 +357,33 @@ void receiveDataPacket() {
     if(state != RADIOLIB_ERR_NONE) {
         Serial.print("[DATA] RX Error : ");
         Serial.println(state);
+        dataRadioFailStreak++;
+        if (dataRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
+            haltSystem("DATA radio (RX)", lastGoodRxSequence);
+            return;
+        }
+        dataRadio.startReceive();
+        return;
+    }
+
+    if (!isPacketPlausible(packet)) {
+        Serial.print("[DATA] Implausible packet rejected - Seq=");
+        Serial.print(packet.sequence);
+        Serial.print(" Sensor=");
+        Serial.println(packet.sensorValue);
+
+        dataRadioFailStreak++;
+        if (dataRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
+            haltSystem("DATA radio (RX)", lastGoodRxSequence);
+            return;
+        }
         dataRadio.startReceive();
         return;
     }
 
     consecutiveCRCFailures = 0;
+    dataRadioFailStreak = 0;
+    lastGoodRxSequence = packet.sequence;
     digitalWrite(LED_ACTIVITY, HIGH);
 
     if(firstPacket) {
@@ -323,12 +404,20 @@ void receiveDataPacket() {
     featureWindow[windowIndex].toa = calculateToA();
     featureWindow[windowIndex].crcOK = true;
 
-    Serial.println("--------------------------------");
-    Serial.print("Sequence : "); Serial.println(packet.sequence);
-    Serial.print("RSSI : ");     Serial.println(featureWindow[windowIndex].rssi);
-    Serial.print("SNR : ");      Serial.println(featureWindow[windowIndex].snr);
-    Serial.print("Sensor : ");   Serial.println(packet.sensorValue);
-    Serial.println("--------------------------------");
+
+Serial.println("--------------------------------");
+Serial.print("sequence Id: "); Serial.println(packet.sequence);
+Serial.print("rxTimestamp: "); Serial.println(millis());                         // rxTimestampMs
+Serial.print("txtimestamp: "); Serial.println(packet.timestamp);                  // txTimestampMs (from payload)
+Serial.print("RSSI: "); Serial.println(featureWindow[windowIndex].rssi, 2);
+Serial.print("SNR: "); Serial.println(featureWindow[windowIndex].snr, 2);
+Serial.print("CFO: "); Serial.println(featureWindow[windowIndex].cfo, 2);
+Serial.print("TOA: "); Serial.println(featureWindow[windowIndex].toa, 1);
+Serial.print("CRC: "); Serial.println(1);                                // crcOK
+Serial.print("SF: "); Serial.println(currentSF);
+Serial.print("CR: "); Serial.println(currentCR);
+Serial.print("sensor: "); Serial.println(packet.sensorValue);
+Serial.println("--------------------------------");
 
     windowIndex++;
     packetsInWindow++;
@@ -427,9 +516,29 @@ void logFeatureVectorCSV(String label) {
 // RUN AI INFERENCE
 //======================================================================
 int runInference() {
-    if(features.meanSNR < -8)    return 1; // Jammer
-    if(features.meanRSSI < -105) return 2; // Weak Link
+    if(features.meanSNR < 10)    return 1; // Jammer
+    if(features.meanRSSI < -101) return 2; // Weak Link
     return 0;                              // Normal
+}
+//======================================================================
+// HALT SYSTEM ON RADIO FAULT
+//======================================================================
+void haltSystem(const char* radioName, uint32_t lastKnownGoodValue) {
+    if (systemHalted) return;   // already halted, don't spam
+    systemHalted = true;
+
+    digitalWrite(LED_ACTIVITY, LOW);
+    digitalWrite(LED_ERROR, HIGH);   // steady ON, not blinking - distinguishes from transient error flash
+
+    Serial.println();
+    Serial.println("=====================================================");
+    Serial.print("SYSTEM HALTED - ");
+    Serial.print(radioName);
+    Serial.println(" malfunction detected (connection/antenna/hardware).");
+    Serial.print("Last known-good sequence/ID : ");
+    Serial.println(lastKnownGoodValue);
+    Serial.println("All TX/RX operations stopped. Power-cycle to recover.");
+    Serial.println("=====================================================");
 }
 
 void applyReceiverConfiguration(uint32_t frequencyKHz, uint8_t sf, uint8_t cr) {
@@ -442,57 +551,94 @@ void applyReceiverConfiguration(uint32_t frequencyKHz, uint8_t sf, uint8_t cr) {
 }
 
 //======================================================================
-// SEND CONTROL PACKET
+// TRANSMIT (OR RETRANSMIT) THE PENDING CONTROL PACKET
 //======================================================================
-void sendControlPacket(uint8_t command, uint32_t frequency, uint8_t sf, uint8_t cr) {
-    ControlPacket packet;
-    packet.commandID = ++commandCounter;
-    packet.command = command;
-    packet.newFrequency = frequency;
-    packet.newSF = sf;
-    packet.newCR = cr;
+void transmitPendingControlPacket() {
+    Serial.print("\n[CTRL] Sending command (attempt ");
+    Serial.print(controlRetryCount + 1);
+    Serial.print("/");
+    Serial.print(CONTROL_MAX_RETRIES);
+    Serial.println(")...");
 
-    Serial.println("\nSending Control Command...");
-    int state = controlRadio.transmit((uint8_t*)&packet, sizeof(packet));
-    
-    if(state != RADIOLIB_ERR_NONE) {
-        Serial.print("Control TX Failed : ");
+    int state = controlRadio.transmit((uint8_t*)&pendingControlPacket, sizeof(pendingControlPacket));
+
+    if (state != RADIOLIB_ERR_NONE) {
+        Serial.print("[CTRL] TX Failed : ");
         Serial.println(state);
-        return;
     }
-
-    Serial.println("Waiting for ACK...");
-
-    if(waitForControlAck()) {
-        Serial.println("ACK Received");
-        currentFrequency = frequency;
-        currentSF = sf;
-        currentCR = cr;
-        applyReceiverConfiguration(currentFrequency, currentSF, currentCR);
-    } else {
-        Serial.println("ACK Timeout");
-    }
+   ctrlPacketFlag = false;   // NEW: discard the self-triggered TxDone interrupt from this transmit
+    controlRadio.startReceive();
+    controlSentTime = millis();
 }
 
 //======================================================================
-// WAIT FOR CONTROL ACK
+// KICK OFF A NEW CONTROL COMMAND (non-blocking)
 //======================================================================
-bool waitForControlAck() {
-    controlRadio.startReceive();
-    uint32_t startTime = millis();
-    while(millis() - startTime < 1500) {
-        if(controlRadio.isPacketReceived()) {
-            ControlAck ack;
-            int state = controlRadio.readData((uint8_t*)&ack, sizeof(ack));
-            if(state == RADIOLIB_ERR_NONE) {
-                if(ack.commandID == commandCounter) {
-                    return ack.applied;
-                }
-            }
-            controlRadio.startReceive();
-        }
+void sendControlCommand(uint8_t command, uint32_t frequency, uint8_t sf, uint8_t cr) {
+    if (controlTxState != CTRL_IDLE) {
+        Serial.println("[CTRL] Busy with previous command, skipping this decision cycle.");
+        return;
     }
-    return false;
+
+    pendingControlPacket.commandID    = ++commandCounter;
+    pendingControlPacket.command      = command;
+    pendingControlPacket.newFrequency = frequency;
+    pendingControlPacket.newSF        = sf;
+    pendingControlPacket.newCR        = cr;
+
+    controlRetryCount = 0;
+    controlTxState    = CTRL_AWAITING_ACK;
+
+    transmitPendingControlPacket();
+}
+
+//======================================================================
+// SERVICE CONTROL PLANE - call every loop() iteration, non-blocking
+//======================================================================
+void serviceControlPlane() {
+    if (controlTxState != CTRL_AWAITING_ACK) {
+        return;
+    }
+
+   if (ctrlPacketFlag) {
+    ctrlPacketFlag = false;
+    ControlAck ack;
+        int state = controlRadio.readData((uint8_t*)&ack, sizeof(ack));
+        controlRadio.startReceive();
+
+        if (state == RADIOLIB_ERR_NONE && ack.commandID == pendingControlPacket.commandID) {
+            Serial.println("[CTRL] ACK Received");
+            controlRadioFailStreak = 0;
+            lastGoodAckCommandID = ack.commandID;
+            if (ack.applied) {
+                currentFrequency = pendingControlPacket.newFrequency;
+                currentSF        = pendingControlPacket.newSF;
+                currentCR        = pendingControlPacket.newCR;
+                applyReceiverConfiguration(currentFrequency, currentSF, currentCR);
+            }
+
+            controlTxState = CTRL_IDLE;
+            return;
+        }
+        // Mismatched/malformed packet on control channel - ignore, keep waiting.
+    }
+
+    if (millis() - controlSentTime >= CONTROL_ACK_TIMEOUT_MS) {
+        controlRetryCount++;
+
+     if (controlRetryCount >= CONTROL_MAX_RETRIES) {
+            Serial.println("[CTRL] ACK Timeout - giving up after max retries.");
+            controlTxState = CTRL_IDLE;
+            controlRadioFailStreak++;
+            if (controlRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
+                haltSystem("CONTROL radio (RX)", lastGoodAckCommandID);
+            }
+            return;
+        }
+
+        Serial.println("[CTRL] ACK Timeout - retrying...");
+        transmitPendingControlPacket();
+    }
 }
 
 //======================================================================
@@ -505,15 +651,15 @@ void executeDecision(int prediction) {
             break;
         case 1:
             Serial.println("\n[AI] Jammer Detected\nChannel Hopping...");
-            sendControlPacket(CMD_CHANNEL_HOP, 434000, currentSF, currentCR);
+            sendControlCommand(CMD_CHANNEL_HOP, 434000, currentSF, currentCR);
             break;
         case 2:
             Serial.println("\n[AI] Weak Link\nIncreasing Robustness");
-            sendControlPacket(CMD_LINK_ADAPT, currentFrequency, 10, 8);
+            sendControlCommand(CMD_LINK_ADAPT, currentFrequency, 10, 8);
             break;
         case 3:
             Serial.println("\n[AI] Excellent Link\nOptimizing Throughput");
-            sendControlPacket(CMD_LINK_ADAPT, currentFrequency, 7, 5);
+            sendControlCommand(CMD_LINK_ADAPT, currentFrequency, 7, 5);
             break;
         default:
             Serial.println("\nUnknown AI Prediction");
@@ -525,8 +671,12 @@ void executeDecision(int prediction) {
 // LOOP
 //======================================================================
 void loop() {
+     if (systemHalted) {
+        return;   // radios stopped permanently - power cycle to recover
+    }
     // Always listen for DATA packets
     receiveDataPacket();
+     serviceControlPlane();   // NEW - non-blocking ACK check/retry, every iteration
 
     // Triggered seamlessly when processFeatureWindow completes a block
     if(windowReady) {

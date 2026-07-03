@@ -54,6 +54,7 @@
 #define LED_TX      32
 #define LED_ERROR   33
 
+#define DATA_PACKET_MAGIC 0xDEADBEEF
 //======================================================================
 // CREATE SHARED SPI BUS
 //======================================================================
@@ -77,7 +78,18 @@ SX1278 controlRadio = new Module(
     RADIOLIB_NC,
     sharedSPI
 );
+//======================================================================
+// RADIO HEALTH / FAULT-HALT STATE
+//======================================================================
+const uint8_t RADIO_FAULT_THRESHOLD = 5;
 
+uint8_t  dataRadioFailStreak    = 0;
+uint8_t  controlRadioFailStreak = 0;
+
+uint32_t lastGoodTxSequence     = 0;
+uint32_t lastGoodAckCommandID   = 0;
+
+bool systemHalted = false;
 //======================================================================
 // CURRENT RADIO CONFIGURATION
 //======================================================================
@@ -90,7 +102,7 @@ uint8_t currentCR = 5;
 //======================================================================
 // CONTROL CHANNEL CONFIGURATION
 //======================================================================
-const float CONTROL_FREQUENCY = 445.0;
+const float CONTROL_FREQUENCY = 445.00;
 const uint8_t CONTROL_SF = 12;
 const uint8_t CONTROL_CR = 8;
 
@@ -98,6 +110,13 @@ const uint8_t CONTROL_CR = 8;
 // PACKET COUNTER
 //======================================================================
 uint32_t sequenceNumber = 0;
+
+
+volatile bool ctrlPacketFlag = false;
+
+void IRAM_ATTR onCtrlDio0() {
+    ctrlPacketFlag = true;
+}
 
 //======================================================================
 // COMMAND TYPES
@@ -114,6 +133,7 @@ enum CommandType
 //======================================================================
 struct DataPacket
 {
+    uint32_t magic;  
     uint32_t sequence;
     uint32_t timestamp;
     uint16_t sensorValue;
@@ -201,7 +221,7 @@ void setup()
     }
 
     controlRadio.startReceive();
-
+    controlRadio.setDio0Action(onCtrlDio0,RISING);
     Serial.println();
     Serial.println("System Ready");
     Serial.println();
@@ -218,6 +238,9 @@ bool initializeDataRadio()
 
     // Convert kHz integer to MHz float for RadioLib setup
     float freqMHz = currentFrequencyKHz / 1000.0f;
+    Serial.println("-----------------------------------------");
+  Serial.println("-----------------------------------------");
+ Serial.printf("DATA Radio Frequency %.2f MHz\n", freqMHz); 
 
     int state = dataRadio.begin(
                     freqMHz,              // Frequency (MHz)
@@ -226,7 +249,8 @@ bool initializeDataRadio()
                     currentCR,            // Coding Rate (5 = 4/5)
                     RADIOLIB_SX127X_SYNC_WORD,
                     17,                   // TX Power (dBm)
-                    8                     // Preamble Length
+                    8,
+                    0                     // Preamble Length
                 );
 
     if(state != RADIOLIB_ERR_NONE)
@@ -266,7 +290,8 @@ bool initializeControlRadio()
                     CONTROL_CR,
                     RADIOLIB_SX127X_SYNC_WORD,
                     10,             // Lower TX power is enough
-                    8
+                    8,
+                    0
                 );
 
     if(state != RADIOLIB_ERR_NONE)
@@ -348,13 +373,30 @@ uint16_t readSensor()
     return random(0, 4096);
 }
 
+void haltSystem(const char* radioName, uint32_t lastKnownGoodValue) {
+    if (systemHalted) return;
+    systemHalted = true;
+
+    digitalWrite(LED_TX, LOW);
+    digitalWrite(LED_ERROR, HIGH);
+
+    Serial.println();
+    Serial.println("=====================================================");
+    Serial.print("SYSTEM HALTED - ");
+    Serial.print(radioName);
+    Serial.println(" malfunction detected (connection/antenna/hardware).");
+    Serial.print("Last known-good sequence/ID : ");
+    Serial.println(lastKnownGoodValue);
+    Serial.println("All TX/RX operations stopped. Power-cycle to recover.");
+    Serial.println("=====================================================");
+}
 //======================================================================
 // SEND DATA PACKET
 //======================================================================
 void sendDataPacket()
 {
     DataPacket packet;
-
+    packet.magic     = DATA_PACKET_MAGIC;
     packet.sequence = sequenceNumber++;
     packet.timestamp = millis();
     packet.sensorValue = readSensor();
@@ -370,6 +412,8 @@ void sendDataPacket()
 
     if(state == RADIOLIB_ERR_NONE)
     {
+        dataRadioFailStreak = 0;
+        lastGoodTxSequence = packet.sequence;
         Serial.print("[DATA] Seq=");
         Serial.print(packet.sequence);
         Serial.print("  Sensor=");
@@ -378,10 +422,15 @@ void sendDataPacket()
         Serial.print("  Time=");
         Serial.println(packet.timestamp);
     }
-    else
+else
     {
         Serial.print("[DATA] Transmission Failed : ");
         Serial.println(state);
+        dataRadioFailStreak++;
+        if (dataRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
+            haltSystem("DATA radio (TX)", lastGoodTxSequence);
+            return;
+        }
         digitalWrite(LED_ERROR, HIGH);
         delay(100);
         digitalWrite(LED_ERROR, LOW);
@@ -401,16 +450,23 @@ void sendControlAck(uint32_t commandID)
                     (uint8_t*)&ack,
                     sizeof(ack)
                 );
-
+    ctrlPacketFlag = false;   // NEW: discard the self-triggered TxDone interrupt from this transmit
     if(state == RADIOLIB_ERR_NONE)
     {
+         controlRadioFailStreak = 0;
+        lastGoodAckCommandID = commandID;
         Serial.print("[CTRL] ACK Sent : ");
         Serial.println(commandID);
     }
-    else
+  else
     {
         Serial.print("[CTRL] ACK Failed : ");
         Serial.println(state);
+        controlRadioFailStreak++;
+        if (controlRadioFailStreak >= RADIO_FAULT_THRESHOLD) {
+            haltSystem("CONTROL radio (TX)", lastGoodAckCommandID);
+            return;
+        }
     }
 
     // Immediately return to receive mode.
@@ -422,11 +478,11 @@ void sendControlAck(uint32_t commandID)
 //======================================================================
 void checkControlPlane()
 {
- // FIX: Replaced non-existent .isPacketReceived() with digitalRead polling
-    if (digitalRead(CTRL_DIO0) == LOW) {
-        return; 
-    }
-
+if (!ctrlPacketFlag) {
+    return;
+}
+ctrlPacketFlag = false;
+ Serial.println("[CTRL] DIO0 fired - packet detected on control radio");   // NEW - diagnostic only
     ControlPacket command;
 
     int state = controlRadio.readData(
@@ -476,6 +532,7 @@ void checkControlPlane()
         //----------------------------------------------------------
         case CMD_CHANNEL_HOP:
             Serial.println("Executing Channel Hop...");
+            sendControlAck(command.commandID);
             applyRadioConfiguration(
                     command.newFrequencyKHz,
                     currentSF,
@@ -488,6 +545,7 @@ void checkControlPlane()
         //----------------------------------------------------------
         case CMD_LINK_ADAPT:
             Serial.println("Executing Link Adaptation...");
+            sendControlAck(command.commandID);
             applyRadioConfiguration(
                     command.newFrequencyKHz,
                     command.newSF,
@@ -504,7 +562,7 @@ void checkControlPlane()
             return;
     }
 
-    sendControlAck(command.commandID);
+
 
     Serial.println("Configuration Applied Successfully");
     Serial.println("====================================");
@@ -526,6 +584,9 @@ uint32_t lastTransmissionTime = 0;
 //======================================================================
 void loop()
 {
+       if (systemHalted) {
+        return;
+    }
     // 1. Always check whether an AI control packet has arrived.
     checkControlPlane();
 
