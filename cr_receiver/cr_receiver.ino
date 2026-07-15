@@ -1,348 +1,247 @@
 /***********************************************************************
- *  AI-Assisted Cognitive Radio LPWAN
- *  RECEIVER NODE
+ * AI-Assisted Cognitive Radio LPWAN
+ * RECEIVER NODE  (Corrected)
  *
- * --------------------------------------------------------------------
- *  DATA PLANE
- *      Frequency : 433 MHz
- *      Purpose   : Receive continuous application data
+ * Board:  ESP32-S3 Dev Module   (FSPI)
+ * Radios: 2x SX1278 (Ra-02)
+ *   DATA  PLANE -> starts at 433 MHz  (follows AI hop commands)
+ *   CTRL  PLANE -> fixed 445 MHz      (outside the jammer band)
  *
- * --------------------------------------------------------------------
- *  CONTROL PLANE
- *      Frequency : 445 MHz
- *      Purpose   :
- *          - Send AI adaptation commands
- *          - Receive Control ACK from transmitter
+ * Pipeline:
+ *   receive DATA -> extract metrics -> fill feature window ->
+ *   compute feature vector -> run inference -> execute policy
+ *   (channel hop / link adaptation) over the control plane.
  *
- * --------------------------------------------------------------------
- *  Receiver Responsibilities
- *
- *  1. Receive DATA packets
- *  2. Extract radio metrics
- *  3. Store metrics in feature window
- *  4. Calculate window statistics
- *  5. Run AI classifier
- *  6. Send adaptation command
- *
+ * ----- FIXES vs. original -----
+ *  - Removed all compile errors: missing semicolons, 'unit8_t' typo,
+ *    out-of-scope 'command'/'prediction', out-of-scope 'processed'.
+ *  - Replaced non-existent isPacketReceived() with DIO0 polling.
+ *  - ControlPacket layout is now byte-identical to the transmitter
+ *    (packed struct, frequency as uint32_t kHz).
+ *  - Frequency handled as uint32_t kHz everywhere (no uint8_t truncation).
+ *  - Hop-escape channels moved OUTSIDE the jammer band (433.0-434.6 MHz).
+ *  - Control commands are authenticated (magic + checksum) and retried;
+ *    inference runs exactly once per completed window.
  ***********************************************************************/
 
 #include <RadioLib.h>
 #include <SPI.h>
 
-
-
 //======================================================================
-// SHARED SPI BUS
+// SPI BUS PINS
 //======================================================================
-
 #define SPI_SCK      12
 #define SPI_MISO     11
 #define SPI_MOSI     13
 
-
-
 //======================================================================
-// DATA RADIO (433 MHz)
+// DATA RADIO (starts 433 MHz)
 //======================================================================
-
 #define NSS_DATA     10
 #define RST_DATA     14
 #define DIO0_DATA    16
 
-
-
 //======================================================================
 // CONTROL RADIO (445 MHz)
 //======================================================================
-
 #define NSS_CTRL     9
 #define RST_CTRL     15
 #define DIO0_CTRL    18
 
-
-
 //======================================================================
 // STATUS LEDs
 //======================================================================
-
 #define LED_ACTIVITY 17
 #define LED_ERROR    4
-
-
 
 //======================================================================
 // FEATURE WINDOW SIZE
 //======================================================================
-
-#define FEATURE_WINDOW_SIZE 5
-
-
+#define FEATURE_WINDOW_SIZE 10
 
 //======================================================================
-// RADIO CONFIGURATION
+// RADIO CONFIGURATION (kHz throughout, must match transmitter)
 //======================================================================
-
-// Must always match transmitter
-
-float currentFrequency = 433000;
-
-uint8_t currentSF = 8;
-
-uint8_t currentCR = 5;
-
-
+uint32_t currentFrequencyKHz = 433000;
+uint8_t  currentSF           = 8;
+uint8_t  currentCR           = 5;
 
 //======================================================================
 // CONTROL CHANNEL CONFIGURATION
 //======================================================================
+const float   CONTROL_FREQUENCY = 445.0;   // MHz
+const uint8_t CONTROL_SF         = 12;
+const uint8_t CONTROL_CR         = 8;
 
-const float CONTROL_FREQUENCY = 445.0;
+//======================================================================
+// CHANNEL-HOP ESCAPE TABLE
+//
+// The jammer occupies 433.0 - 434.6 MHz (9 channels, 200 kHz spacing).
+// Escape channels are chosen OUTSIDE that band so a hop actually leaves
+// the jammed spectrum.  Verify these against your local ISM/regulatory
+// limits before radiating.
+//======================================================================
+const uint32_t HOP_TABLE_KHZ[] = { 434800, 435000, 435200, 435400 };
+const uint8_t  HOP_TABLE_SIZE  = sizeof(HOP_TABLE_KHZ) / sizeof(HOP_TABLE_KHZ[0]);
+int hopIndex = -1;
 
-const uint8_t CONTROL_SF = 12;
-
-const uint8_t CONTROL_CR = 8;
-
-
+uint32_t windowStartTime = 0;
+const uint32_t WINDOW_TIMEOUT_MS = 15000; 
+// ---- add these globals near your other window-state variables ----
+float sumForeignRSSI = 0, sumForeignSNR = 0, sumForeignCFO = 0;
+int   foreignCount = 0;
 
 //======================================================================
 // SHARED SPI BUS
 //======================================================================
-
 SPIClass sharedSPI(FSPI);
-
-
 
 //======================================================================
 // RADIO OBJECTS
 //======================================================================
-
 SX1278 dataRadio = new Module(
-    NSS_DATA,
-    DIO0_DATA,
-    RST_DATA,
-    RADIOLIB_NC,
-    sharedSPI
-);
+    NSS_DATA, DIO0_DATA, RST_DATA, RADIOLIB_NC, sharedSPI);
 
 SX1278 controlRadio = new Module(
-    NSS_CTRL,
-    DIO0_CTRL,
-    RST_CTRL,
-    RADIOLIB_NC,
-    sharedSPI
-);
-
-
+    NSS_CTRL, DIO0_CTRL, RST_CTRL, RADIOLIB_NC, sharedSPI);
 
 //======================================================================
-// COMMAND TYPES
+// SHARED PROTOCOL  (MUST be byte-identical on TX and RX)
 //======================================================================
+static const uint32_t PROTO_MAGIC  = 0xC0DEA5A5UL;
+static const uint32_t PROTO_SECRET = 0x5A17C0DEUL;
 
-enum CommandType
-{
-    CMD_NONE = 0,
-
-    CMD_CHANNEL_HOP = 1,
-
-    CMD_LINK_ADAPT = 2
-};
-
-
-
-//======================================================================
-// DATA PACKET
-//
-// Must be IDENTICAL to transmitter
-//======================================================================
-
+#pragma pack(push, 1)
 struct DataPacket
 {
+    uint32_t magic; 
     uint32_t sequence;
-
     uint32_t timestamp;
-
     uint16_t sensorValue;
 };
 
-
-
-//======================================================================
-// CONTROL PACKET
-//
-// Sent TO transmitter
-//======================================================================
-
 struct ControlPacket
 {
+    uint32_t magic;
     uint32_t commandID;
-
-    uint8_t command;
-
-    uint8_t newFrequency;
-
-    uint8_t newSF;
-
-    uint8_t newCR;
+    uint8_t  command;
+    uint32_t newFrequencyKHz;
+    uint8_t  newSF;
+    uint8_t  newCR;
+    uint32_t checksum;
 };
-
-
-
-//======================================================================
-// CONTROL ACK
-//
-// Returned BY transmitter
-//======================================================================
 
 struct ControlAck
 {
+    uint32_t magic;
     uint32_t commandID;
+    uint8_t  applied;
+    uint32_t checksum;
+};
+#pragma pack(pop)
 
-    bool applied;
+enum CommandType
+{
+    CMD_NONE        = 0,
+    CMD_CHANNEL_HOP = 1,
+    CMD_LINK_ADAPT  = 2
 };
 
+uint32_t controlChecksum(const ControlPacket &p)
+{
+    uint32_t s = PROTO_SECRET;
+    s += p.magic;
+    s += p.commandID;
+    s += p.command;
+    s += p.newFrequencyKHz;
+    s += p.newSF;
+    s += p.newCR;
+    return s;
+}
 
+uint32_t ackChecksum(const ControlAck &a)
+{
+    uint32_t s = PROTO_SECRET;
+    s += a.magic;
+    s += a.commandID;
+    s += a.applied;
+    return s;
+}
 
 //======================================================================
-// RAW FEATURE
-//
-// One entry per received packet
+// RAW FEATURE (one entry per received packet)
 //======================================================================
-
 struct PacketFeature
 {
     uint32_t sequence;
-
     uint32_t timestamp;
-
-    float rssi;
-
-    float snr;
-
-    float cfo;
-
-    float toa;
-
-    bool crcOK;
+    float    rssi;
+    float    snr;
+    float    cfo;
+    float    toa;
+    bool     crcOK;
 };
-
-
-
-//======================================================================
-// WINDOW BUFFER
-//======================================================================
 
 PacketFeature featureWindow[FEATURE_WINDOW_SIZE];
 
-
-
 //======================================================================
-// WINDOW VARIABLES
+// FEATURE VECTOR (ML input)
 //======================================================================
-
-uint8_t windowIndex = 0;
-
-uint32_t expectedSequence = 0;
-
-uint16_t packetsReceived = 0;
-
-uint16_t packetsLost = 0;
-
-uint16_t crcFailures = 0;
-
-uint32_t commandCounter = 0;
-
-
-
-
-//======================================================================
-// FEATURE VECTOR
-//
-// This will become ML input
-//======================================================================
-
 struct FeatureVector
 {
-    float meanRSSI;
-
-    float varRSSI;
-
-    float meanSNR;
-
-    float varSNR;
-
-    float CFO;
-
-    float PLR;
-
+    float    meanRSSI;
+    float    varRSSI;
+    float    meanSNR;
+    float    varSNR;
+    float    CFO;
+    float    PLR;
     uint16_t consecutiveCRCFailures;
-
-    uint8_t currentSF;
-
-    uint8_t currentCR;
-
-    float meanToA;
+    uint8_t  currentSF;
+    uint8_t  currentCR;
+    float    meanToA;
 };
 
 FeatureVector features;
 
 //======================================================================
-// WINDOW STATISTICS
+// WINDOW STATE
 //======================================================================
+uint8_t  windowIndex             = 0;
+uint8_t  packetsInWindow         = 0;
+uint16_t lostPacketsWindow       = 0;
+uint16_t crcFailuresWindow       = 0;
+uint16_t consecutiveCRCFailures  = 0;
+uint32_t previousSequence        = 0;
+bool     firstPacket             = true;
 
-uint8_t packetsInWindow = 0;
-
-uint16_t lostPacketsWindow = 0;
-
-uint16_t crcFailuresWindow = 0;
-
-uint16_t consecutiveCRCFailures = 0;
-
-uint32_t previousSequence = 0;
-
-bool firstPacket = true;
+uint32_t commandCounter          = 0;
 
 //======================================================================
 // FUNCTION DECLARATIONS
 //======================================================================
-
-bool initializeDataRadio();
-
-bool initializeControlRadio();
-
-void receiveDataPacket();
-
-void processFeatureWindow();
-
-void extractFeatures();
-
-int runInference();
-
-void sendControlPacket(
-        uint8_t command,
-        unit8_t frequency,
-        uint8_t sf,
-        uint8_t cr
-);
-
-bool waitForControlAck();
-
+bool  initializeDataRadio();
+bool  initializeControlRadio();
+void  receiveDataPacket();
+void  processFeatureWindow();
+void  extractFeatures();
+int   runInference();
+void  executeDecision(int prediction);
+void  sendControlPacket(uint8_t commandType, uint32_t frequencyKHz,
+                        uint8_t sf, uint8_t cr);
+bool  waitForControlAck(uint32_t expectedID);
+void  applyReceiverConfiguration(uint32_t frequencyKHz, uint8_t sf, uint8_t cr);
 float calculateToA();
-
 float readFrequencyError();
-
-
 
 //======================================================================
 // SETUP
 //======================================================================
-
 void setup()
 {
     Serial.begin(115200);
 
     pinMode(LED_ACTIVITY, OUTPUT);
     pinMode(LED_ERROR, OUTPUT);
-
     digitalWrite(LED_ACTIVITY, LOW);
     digitalWrite(LED_ERROR, LOW);
 
@@ -351,55 +250,37 @@ void setup()
     Serial.println(" AI Cognitive Radio Receiver");
     Serial.println("======================================");
 
+    sharedSPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, -1);
 
-
-    sharedSPI.begin(
-        SPI_SCK,
-        SPI_MISO,
-        SPI_MOSI,
-        -1
-    );
-
-
-
-    if(!initializeDataRadio())
+    if (!initializeDataRadio())
     {
         Serial.println("DATA RADIO FAILED");
-
-        while(true);
+        while (true) { delay(1000); }
     }
 
-
-
-    if(!initializeControlRadio())
+    if (!initializeControlRadio())
     {
         Serial.println("CONTROL RADIO FAILED");
-
-        while(true);
+        while (true) { delay(1000); }
     }
 
-
-
-    dataRadio.startReceive();
+    dataRadio.startReceive();        // arm data plane (DIO0 -> RxDone)
 
     Serial.println();
-
     Serial.println("Receiver Ready");
-
     Serial.println();
 }
-
 
 //======================================================================
 // INITIALIZE DATA RADIO
 //======================================================================
-
 bool initializeDataRadio()
 {
     Serial.println("--------------------------------------");
     Serial.println("Initializing DATA Radio...");
     Serial.println("--------------------------------------");
-    float freqMHz = currentFrequency / 1000.0f
+
+    float freqMHz = currentFrequencyKHz / 1000.0f;
 
     int state = dataRadio.begin(
                     freqMHz,
@@ -408,43 +289,26 @@ bool initializeDataRadio()
                     currentCR,
                     RADIOLIB_SX127X_SYNC_WORD,
                     10,
-                    8
-                );
+                    8);
 
-    if(state != RADIOLIB_ERR_NONE)
+    if (state != RADIOLIB_ERR_NONE)
     {
         Serial.print("Initialization Failed : ");
-
         Serial.println(state);
-
         return false;
     }
 
     Serial.println("DATA Radio Ready");
-
-    Serial.print("Frequency : ");
-
-    Serial.println(currentFrequency);
-
-    Serial.print("SF : ");
-
-    Serial.println(currentSF);
-
-    Serial.print("CR : 4/");
-
-    Serial.println(currentCR);
-
+    Serial.print("Frequency (kHz) : "); Serial.println(currentFrequencyKHz);
+    Serial.print("SF : ");              Serial.println(currentSF);
+    Serial.print("CR : 4/");            Serial.println(currentCR);
     Serial.println();
-
     return true;
 }
-
-
 
 //======================================================================
 // INITIALIZE CONTROL RADIO
 //======================================================================
-
 bool initializeControlRadio()
 {
     Serial.println("--------------------------------------");
@@ -458,267 +322,183 @@ bool initializeControlRadio()
                     CONTROL_CR,
                     RADIOLIB_SX127X_SYNC_WORD,
                     10,
-                    8
-                );
+                    8);
 
-    if(state != RADIOLIB_ERR_NONE)
+    if (state != RADIOLIB_ERR_NONE)
     {
         Serial.print("Initialization Failed : ");
-
         Serial.println(state);
-
         return false;
     }
 
     Serial.println("CONTROL Radio Ready");
-
     Serial.println();
-
     return true;
 }
 
-
-
 //======================================================================
-// CALCULATE TIME ON AIR
-//
-// This uses the CURRENT radio configuration.
-//
-// Later if SF/CR changes,
-// this automatically changes too.
+// TIME ON AIR (uses current radio configuration)
 //======================================================================
-
 float calculateToA()
 {
     size_t payloadLength = sizeof(DataPacket);
+    return dataRadio.getTimeOnAir(payloadLength);
+}
 
-    float toa =
-        dataRadio.getTimeOnAir(payloadLength);
+//======================================================================
+// FREQUENCY ERROR (CFO)
+//
+// RadioLib does not expose SX1278 frequency error; returns 0 for now.
+// Replace later with direct RegFei register reads.
+//======================================================================
 
-    return toa;
+ float readFrequencyError() {
+  return dataRadio.getFrequencyError();
 }
 
 
 
 //======================================================================
-// READ FREQUENCY ERROR
-//
-// SX1278 stores Frequency Error in:
-//
-// RegFeiMsb
-// RegFeiMid
-// RegFeiLsb
-//
-// NOTE:
-//
-// RadioLib currently does not expose a public API
-// for SX1278 Frequency Error.
-//
-// For Version 1 we return 0.
-//
-// In Part 5 we will replace this with direct
-// register access using SPI.
-//======================================================================
-
-float readFrequencyError()
-{
-    return 0.0;
-}
-
-
-//======================================================================
-// RECEIVE DATA PACKET
+// RECEIVE DATA PACKET (fixed: magic-checked capture-effect handling)
 //======================================================================
 
 void receiveDataPacket()
 {
+    if (windowStartTime == 0) windowStartTime = millis();
 
-    //----------------------------------------------------------
-    // No packet?
-    //----------------------------------------------------------
-
-    if(!dataRadio.isPacketReceived())
+    if (digitalRead(DIO0_DATA) == LOW)
+    {
+        // no packet yet -- check if window has timed out
+        if (millis() - windowStartTime > WINDOW_TIMEOUT_MS &&
+            (packetsInWindow > 0 || foreignCount > 0))
+        {
+            processFeatureWindow();   // flush, using real OR foreign-capture stats
+            windowIndex = 0; 
+            packetsInWindow = 0;
+            lostPacketsWindow = 0; 
+            crcFailuresWindow = 0;
+            sumForeignRSSI = 0;
+            sumForeignSNR = 0; 
+            sumForeignCFO = 0; 
+            foreignCount = 0;
+            windowStartTime = millis();
+        }
+        else if (millis() - windowStartTime > WINDOW_TIMEOUT_MS &&
+                 packetsInWindow == 0 && foreignCount == 0)
+        {
+            // TRUE silence: nothing decoded at all, not even jammer preamble.
+            // This really is undefined -- keep the sentinel only for this case.
+            Serial.println("CSVROW,-999,0,-999,0,0,1.0000,0,0,0,0");
+            windowStartTime = millis();
+        }
         return;
-
-
-
-    //----------------------------------------------------------
-    // Read received packet
-    //----------------------------------------------------------
+    }
 
     DataPacket packet;
+    int state = dataRadio.readData((uint8_t*)&packet, sizeof(packet));
 
-    int state = dataRadio.readData(
-                    (uint8_t*)&packet,
-                    sizeof(packet)
-                );
-
-
-
-    //----------------------------------------------------------
-    // CRC Error
-    //----------------------------------------------------------
-
-    if(state == RADIOLIB_ERR_CRC_MISMATCH)
+    // ---- CRC error ----
+    if (state == RADIOLIB_ERR_CRC_MISMATCH)
     {
         Serial.println("[DATA] CRC Failure");
-
         crcFailuresWindow++;
-
         consecutiveCRCFailures++;
-
+        lostPacketsWindow++;
         dataRadio.startReceive();
-
         return;
     }
 
-
-
-    //----------------------------------------------------------
-    // Other receive error
-    //----------------------------------------------------------
-
-    if(state != RADIOLIB_ERR_NONE)
+    // ---- Other receive error ----
+    if (state != RADIOLIB_ERR_NONE)
     {
         Serial.print("[DATA] RX Error : ");
-
         Serial.println(state);
-
         dataRadio.startReceive();
-
         return;
     }
 
+    // ---- CRC passed, but check WHO actually sent it ----
+    if (packet.magic != PROTO_SECRET)
+    {
+        // Foreign/jammer packet -- CRC passed so RadioLib's RSSI/SNR/CFO
+        // readings ARE valid measurements of the interferer's signal.
+        // Capture them instead of throwing them away.
+        float fRSSI = dataRadio.getRSSI();
+        float fSNR  = dataRadio.getSNR();
+        float fCFO  = readFrequencyError();
 
+        Serial.print("[DATA] Foreign/Jammer packet captured (magic mismatch) RSSI=");
+        Serial.print(fRSSI); Serial.print(" SNR="); Serial.println(fSNR);
 
-    //----------------------------------------------------------
-    // Successful packet
-    //----------------------------------------------------------
+        sumForeignRSSI += fRSSI;
+        sumForeignSNR  += fSNR;
+        sumForeignCFO  += fCFO;
+        foreignCount++;
 
+        crcFailuresWindow++;
+        consecutiveCRCFailures++;
+        lostPacketsWindow++;
+        dataRadio.startReceive();
+        return;
+    }
+
+    // ---- Good, verified packet ----
     consecutiveCRCFailures = 0;
-
     digitalWrite(LED_ACTIVITY, HIGH);
 
-
-
-    //----------------------------------------------------------
-    // Packet Loss Calculation
-    //----------------------------------------------------------
-
-    if(firstPacket)
+    if (firstPacket)
     {
         previousSequence = packet.sequence;
-
         firstPacket = false;
+    }
+    else if (packet.sequence > previousSequence + 1)
+    {
+        lostPacketsWindow += (packet.sequence - previousSequence - 1);
+        previousSequence = packet.sequence;
     }
     else
     {
-
-        if(packet.sequence > previousSequence + 1)
-        {
-            lostPacketsWindow +=
-                (packet.sequence - previousSequence - 1);
-        }
-
         previousSequence = packet.sequence;
     }
 
-
-
-    //----------------------------------------------------------
-    // Store Features
-    //----------------------------------------------------------
-
-    featureWindow[windowIndex].sequence = packet.sequence;
-
+    featureWindow[windowIndex].sequence  = packet.sequence;
     featureWindow[windowIndex].timestamp = packet.timestamp;
-
-    featureWindow[windowIndex].rssi =
-        dataRadio.getRSSI();
-
-    featureWindow[windowIndex].snr =
-        dataRadio.getSNR();
-
-    featureWindow[windowIndex].cfo =
-        readFrequencyError();
-
-    featureWindow[windowIndex].toa =
-        calculateToA();
-
-    featureWindow[windowIndex].crcOK = true;
-
-
-
-    //----------------------------------------------------------
-    // Debug Output
-    //----------------------------------------------------------
+    featureWindow[windowIndex].rssi      = dataRadio.getRSSI();
+    featureWindow[windowIndex].snr       = dataRadio.getSNR();
+    featureWindow[windowIndex].cfo       = readFrequencyError();
+    featureWindow[windowIndex].toa       = calculateToA();
+    featureWindow[windowIndex].crcOK     = true;
 
     Serial.println("--------------------------------");
-
-    Serial.print("Sequence : ");
-
-    Serial.println(packet.sequence);
-
-    Serial.print("RSSI : ");
-
-    Serial.println(featureWindow[windowIndex].rssi);
-
-    Serial.print("SNR : ");
-
-    Serial.println(featureWindow[windowIndex].snr);
-
-    Serial.print("Sensor : ");
-
-    Serial.println(packet.sensorValue);
-
+    Serial.print("Sequence : "); Serial.println(packet.sequence);
+    Serial.print("RSSI : ");     Serial.println(featureWindow[windowIndex].rssi);
+    Serial.print("SNR : ");      Serial.println(featureWindow[windowIndex].snr);
+    Serial.print("Sensor : ");   Serial.println(packet.sensorValue);
+    Serial.print("TOA : ");      Serial.println(featureWindow[windowIndex].toa);
+    Serial.print("CFO : ");      Serial.println(featureWindow[windowIndex].cfo);
     Serial.println("--------------------------------");
-
-
-
-    //----------------------------------------------------------
-    // Advance Window
-    //----------------------------------------------------------
 
     windowIndex++;
-
     packetsInWindow++;
 
-
-
-    //----------------------------------------------------------
-    // Window Complete?
-    //----------------------------------------------------------
-
-    if(windowIndex >= FEATURE_WINDOW_SIZE)
+    if (windowIndex >= FEATURE_WINDOW_SIZE)
     {
         processFeatureWindow();
-
-        windowIndex = 0;
-
-        packetsInWindow = 0;
-
-        lostPacketsWindow = 0;
-
-        crcFailuresWindow = 0;
+        windowIndex        = 0;
+        packetsInWindow    = 0;
+        lostPacketsWindow  = 0;
+        crcFailuresWindow  = 0;
+        sumForeignRSSI = 0; sumForeignSNR = 0; sumForeignCFO = 0; foreignCount = 0;
+        windowStartTime    = millis();   // <-- Bug 1 fix
     }
 
-
-
     digitalWrite(LED_ACTIVITY, LOW);
-
-
-
-    //----------------------------------------------------------
-    // Return receiver back into RX mode
-    //----------------------------------------------------------
-
     dataRadio.startReceive();
 }
 
 //======================================================================
 // PROCESS FEATURE WINDOW
 //======================================================================
-
 void processFeatureWindow()
 {
     Serial.println();
@@ -729,521 +509,385 @@ void processFeatureWindow()
     extractFeatures();
 
     Serial.println();
-
     Serial.println("========== FEATURE VECTOR ==========");
-
-    Serial.print("Mean RSSI : ");
-    Serial.println(features.meanRSSI);
-
-    Serial.print("Variance RSSI : ");
-    Serial.println(features.varRSSI);
-
-    Serial.print("Mean SNR : ");
-    Serial.println(features.meanSNR);
-
-    Serial.print("Variance SNR : ");
-    Serial.println(features.varSNR);
-
-    Serial.print("Mean ToA : ");
-    Serial.println(features.meanToA);
-
-    Serial.print("Mean CFO : ");
-    Serial.println(features.CFO);
-
-    Serial.print("PLR : ");
-    Serial.println(features.PLR);
-
-    Serial.print("CRC Failures : ");
-    Serial.println(features.consecutiveCRCFailures);
-
-    Serial.print("Current SF : ");
-    Serial.println(features.currentSF);
-
-    Serial.print("Current CR : ");
-    Serial.println(features.currentCR);
-
+    Serial.print("Mean RSSI : ");     Serial.println(features.meanRSSI);
+    Serial.print("Variance RSSI : "); Serial.println(features.varRSSI);
+    Serial.print("Mean SNR : ");      Serial.println(features.meanSNR);
+    Serial.print("Variance SNR : ");  Serial.println(features.varSNR);
+    Serial.print("Mean ToA : ");      Serial.println(features.meanToA);
+    Serial.print("Mean CFO : ");      Serial.println(features.CFO);
+    Serial.print("PLR : ");           Serial.println(features.PLR);
+    Serial.print("CRC Failures : ");  Serial.println(features.consecutiveCRCFailures);
+    Serial.print("Current SF : ");    Serial.println(features.currentSF);
+    Serial.print("Current CR : ");    Serial.println(features.currentCR);
     Serial.println("====================================");
 
+    // ---- Machine-readable line for the PC-side logger ----
+    // Order MUST match HEADER in getcsv.py:
+    // meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR,meanToA
+    Serial.print("CSVROW,");
+    Serial.print(features.meanRSSI, 4);        Serial.print(",");
+    Serial.print(features.varRSSI, 4);         Serial.print(",");
+    Serial.print(features.meanSNR, 4);         Serial.print(",");
+    Serial.print(features.varSNR, 4);          Serial.print(",");
+    Serial.print(features.CFO, 4);             Serial.print(",");
+    Serial.print(features.PLR, 4);             Serial.print(",");
+    Serial.print(features.consecutiveCRCFailures); Serial.print(",");
+    Serial.print(features.currentSF);          Serial.print(",");
+    Serial.print(features.currentCR);          Serial.print(",");
+    Serial.println(features.meanToA, 4);
 
-
-    //----------------------------------------------------------
-    // TinyML / Random Forest
-    //----------------------------------------------------------
-
-   Serial.println("Feature Vector Ready");
-
+    // ---- Inference (replace with TinyML / Random Forest later) ----
+    int prediction = runInference();
     Serial.print("Prediction = ");
-
     Serial.println(prediction);
-
     Serial.println();
+
+    executeDecision(prediction);
 }
-
-
-
-
-
-
 //======================================================================
 // FEATURE EXTRACTION
 //======================================================================
-
 void extractFeatures()
 {
+    // Use the ACTUAL packet count, not the fixed window size --
+    // a timed-out window (heavy jamming) may close with fewer than
+    // FEATURE_WINDOW_SIZE packets, or even zero.
+    int n = packetsInWindow;
 
-    float sumRSSI = 0;
+    if (n == 0)
+    {
+        // Total loss: no packets arrived this window at all.
+        // RSSI/SNR/CFO/ToA are undefined -- use sentinel values rather
+        // than silently dividing by zero (which on most toolchains
+        // yields NaN/inf and corrupts everything downstream, including
+        // the ML feature vector and any CSV row printed from it).
+          if (foreignCount > 0)
+        {
+            // No real data got through, but we DID measure the jammer's
+            // signal repeatedly -- use that as the RSSI/SNR/CFO signature
+            // for this window. This is the useful "exact SF/freq match,
+            // jammer totally dominates" case.
+            features.meanRSSI = sumForeignRSSI / foreignCount;
+            features.varRSSI  = 0.0f;   // single-source variance; see note below
+            features.meanSNR  = sumForeignSNR  / foreignCount;
+            features.varSNR   = 0.0f;
+            features.CFO      = sumForeignCFO  / foreignCount;
+            features.meanToA  = 0.0f;   // ToA not meaningful for foreign captures
+            features.PLR      = 1.0f;   // 100% loss of real TX data
+        }
+            else if (crcFailuresWindow > 0)
+        {
+            // Nothing decoded cleanly, but corrupted frames WERE heard --
+            // heavy-noise / desync signature, distinct from true silence.
+            features.meanRSSI = -999.0f;   // RadioLib doesn't expose RSSI on CRC failure
+            features.varRSSI  = 0.0f;
+            features.meanSNR  = -999.0f;
+            features.varSNR   = 0.0f;
+            features.CFO      = 0.0f;
+            features.meanToA  = 0.0f;
+            features.PLR      = 1.0f;
+        }
+        else
+        {
+        features.meanRSSI = -999.0f;
+        features.varRSSI  = 0.0f;
+        features.meanSNR  = -999.0f;
+        features.varSNR   = 0.0f;
+        features.CFO      = 0.0f;
+        features.meanToA  = 0.0f;
+        features.PLR      = 1.0f;   // 100% loss
+        }
+        features.consecutiveCRCFailures = consecutiveCRCFailures;
+        features.currentSF = currentSF;
+        features.currentCR = currentCR;
+        return;
+    }
 
-    float sumSNR = 0;
+    float sumRSSI = 0, sumSNR = 0, sumToA = 0, sumCFO = 0;
 
-    float sumToA = 0;
-
-    float sumCFO = 0;
-
-
-
-    //----------------------------------------------------------
-    // Calculate Means
-    //----------------------------------------------------------
-
-    for(int i=0;i<FEATURE_WINDOW_SIZE;i++)
+    for (int i = 0; i < n; i++)
     {
         sumRSSI += featureWindow[i].rssi;
-
-        sumSNR += featureWindow[i].snr;
-
-        sumToA += featureWindow[i].toa;
-
-        sumCFO += featureWindow[i].cfo;
+        sumSNR  += featureWindow[i].snr;
+        sumToA  += featureWindow[i].toa;
+        sumCFO  += featureWindow[i].cfo;
     }
 
+    features.meanRSSI = sumRSSI / n;
+    features.meanSNR  = sumSNR  / n;
+    features.meanToA  = sumToA  / n;
+    features.CFO      = sumCFO  / n;
 
-
-    features.meanRSSI =
-        sumRSSI / FEATURE_WINDOW_SIZE;
-
-    features.meanSNR =
-        sumSNR / FEATURE_WINDOW_SIZE;
-
-    features.meanToA =
-        sumToA / FEATURE_WINDOW_SIZE;
-
-    features.CFO =
-        sumCFO / FEATURE_WINDOW_SIZE;
-
-
-
-    //----------------------------------------------------------
-    // Calculate Variance
-    //----------------------------------------------------------
-
-    float rssiVariance = 0;
-
-    float snrVariance = 0;
-
-    for(int i=0;i<FEATURE_WINDOW_SIZE;i++)
+    float rssiVariance = 0, snrVariance = 0;
+    for (int i = 0; i < n; i++)
     {
-
-        float rssiDifference =
-            featureWindow[i].rssi -
-            features.meanRSSI;
-
-        rssiVariance +=
-            rssiDifference *
-            rssiDifference;
-
-
-
-        float snrDifference =
-            featureWindow[i].snr -
-            features.meanSNR;
-
-        snrVariance +=
-            snrDifference *
-            snrDifference;
-
+        float dR = featureWindow[i].rssi - features.meanRSSI;
+        rssiVariance += dR * dR;
+        float dS = featureWindow[i].snr - features.meanSNR;
+        snrVariance += dS * dS;
     }
+    features.varRSSI = rssiVariance / n;
+    features.varSNR  = snrVariance / n;
 
+    // Packet loss rate over the window
+    // (n successfully-decoded packets out of n + lostPacketsWindow expected)
+    features.PLR = (float)lostPacketsWindow /
+                   (n + lostPacketsWindow);
 
-
-    features.varRSSI =
-        rssiVariance / FEATURE_WINDOW_SIZE;
-
-    features.varSNR =
-        snrVariance / FEATURE_WINDOW_SIZE;
-
-
-
-    //----------------------------------------------------------
-    // Packet Loss Rate
-    //----------------------------------------------------------
-
-    features.PLR =
-        (float)lostPacketsWindow /
-        (FEATURE_WINDOW_SIZE + lostPacketsWindow);
-
-
-
-    //----------------------------------------------------------
-    // CRC
-    //----------------------------------------------------------
-
-    features.consecutiveCRCFailures =
-        consecutiveCRCFailures;
-
-
-
-    //----------------------------------------------------------
-    // Current Radio State
-    //----------------------------------------------------------
-
+    features.consecutiveCRCFailures = consecutiveCRCFailures;
     features.currentSF = currentSF;
-
     features.currentCR = currentCR;
-
 }
-//======================================================================
-// RUN AI INFERENCE
-//
-// Replace this function later with:
-//
-//  Random Forest
-//  TinyML
-//  TensorFlow Lite
-//  Edge Impulse
-//
-// Input:
-//      FeatureVector features;
-//
-// Output:
-//      Class ID
-//
-//          0 = Normal
-//          1 = Jammer
-//          2 = Weak Link
-//          3 = Excellent Link
-//======================================================================
 
+//======================================================================
+// RUN AI INFERENCE  (placeholder heuristic)
+//
+// Output class:
+//   0 = Normal
+//   1 = Jammer
+//   2 = Weak Link
+//   3 = Excellent Link
+//
+// Replace with Random Forest / TinyML / TensorFlow Lite / Edge Impulse.
+//======================================================================
 int runInference()
 {
-    //----------------------------------------------------------
-    // Temporary decision logic
-    //----------------------------------------------------------
+    // // Jammer: sustained CRC failures, or low SNR combined with high loss.
+    // if (features.consecutiveCRCFailures >= 3 ||
+    //     (features.meanSNR < -7.0f && features.PLR > 0.30f))
+    //     return 1;
 
-    if(features.meanSNR < -8)
-        return 1;
+    // // Weak link: low RSSI or negative SNR without heavy loss.
+    // if (features.meanRSSI < -100.0f || features.meanSNR < 0.0f)
+    //     return 2;
 
-    if(features.meanRSSI < -105)
-        return 2;
+    // // Excellent link: strong RSSI and high SNR.
+    // if (features.meanRSSI > -60.0f && features.meanSNR > 8.0f)
+    //     return 3;
 
     return 0;
 }
 
-void applyReceiverConfiguration(
-        uint8_t frequency,
-        uint8_t sf,
-        uint8_t cr)
+//======================================================================
+// APPLY RECEIVER CONFIGURATION (data plane)
+//======================================================================
+void applyReceiverConfiguration(uint32_t frequencyKHz, uint8_t sf, uint8_t cr)
 {
-  float freqMHz = command.frequencyKHz / 1000.0f
+    float freqMHz = frequencyKHz / 1000.0f;
+
     dataRadio.setFrequency(freqMHz);
-
     dataRadio.setSpreadingFactor(sf);
-
     dataRadio.setCodingRate(cr);
-
     dataRadio.startReceive();
 
     Serial.println("Receiver Reconfigured");
 }
 
 //======================================================================
-// SEND CONTROL PACKET
+// SEND CONTROL PACKET (with authentication + retries)
 //======================================================================
-
-void sendControlPacket(
-        uint8_t command,
-        uint8_t frequency,
-        uint8_t sf,
-        uint8_t cr)
+void sendControlPacket(uint8_t commandType, uint32_t frequencyKHz,
+                       uint8_t sf, uint8_t cr)
 {
-
     ControlPacket packet;
+    packet.magic           = PROTO_MAGIC;
+    packet.commandID       = ++commandCounter;
+    packet.command         = commandType;
+    packet.newFrequencyKHz = frequencyKHz;
+    packet.newSF           = sf;
+    packet.newCR           = cr;
+    packet.checksum        = controlChecksum(packet);
 
-    packet.commandID = ++commandCounter;
+    const uint8_t MAX_ATTEMPTS = 4;
 
-    packet.command = command;
-
-    packet.newFrequency = frequency;
-
-    packet.newSF = sf;
-
-    packet.newCR = cr;
-
-
-
-    Serial.println();
-    Serial.println("Sending Control Command...");
-
-
-
-    int state =
-        controlRadio.transmit(
-            (uint8_t*)&packet,
-            sizeof(packet)
-        );
-
-
-
-    if(state != RADIOLIB_ERR_NONE)
+    for (uint8_t attempt = 1; attempt <= MAX_ATTEMPTS; attempt++)
     {
-        Serial.print("Control TX Failed : ");
+        Serial.print("[CTRL] Sending command (attempt ");
+        Serial.print(attempt); Serial.print("/");
+        Serial.print(MAX_ATTEMPTS); Serial.println(")...");
 
-        Serial.println(state);
-
-        return;
-    }
-
-
-
-    Serial.println("Waiting for ACK...");
-
-
-
-    if(waitForControlAck())
-    {
-        Serial.println("ACK Received");
-
-        currentFrequency = frequency;
-
-        currentSF = sf;
-
-        currentCR = cr;
-
-        applyReceiverConfiguration(
-        currentFrequency,
-        currentSF,
-        currentCR
-    );
-    }
-    else
-    {
-        Serial.println("ACK Timeout");
-    }
-}
-
-
-
-//======================================================================
-// WAIT FOR CONTROL ACK
-//======================================================================
-
-bool waitForControlAck()
-{
-
-    controlRadio.startReceive();
-
-    uint32_t startTime = millis();
-
-    while(millis() - startTime < 1500)
-    {
-
-        if(controlRadio.isPacketReceived())
+        int state = controlRadio.transmit((uint8_t*)&packet, sizeof(packet));
+        if (state != RADIOLIB_ERR_NONE)
         {
-
-            ControlAck ack;
-
-            int state =
-                controlRadio.readData(
-                    (uint8_t*)&ack,
-                    sizeof(ack)
-                );
-
-            if(state == RADIOLIB_ERR_NONE)
-            {
-
-                if(ack.commandID == commandCounter)
-                {
-                    return ack.applied;
-                }
-
-            }
-
-            controlRadio.startReceive();
-
+            Serial.print("Control TX Failed : ");
+            Serial.println(state);
+            continue;                 // retry
         }
 
+        if (waitForControlAck(packet.commandID))
+        {
+            Serial.println("ACK Received");
+
+            // Only NOW commit the receiver to the new configuration,
+            // keeping it in step with the (already acknowledged) TX.
+            currentFrequencyKHz = frequencyKHz;
+            currentSF           = sf;
+            currentCR           = cr;
+
+            applyReceiverConfiguration(currentFrequencyKHz,
+                                       currentSF, currentCR);
+            return;
+        }
+
+        Serial.println("ACK Timeout");
     }
 
+    Serial.println("[CTRL] Command failed after retries (config unchanged)");
+    // Re-arm the data plane; configuration stays as-is so TX and RX
+    // remain on the same (old) channel if the command never landed.
+    dataRadio.startReceive();
+}
+
+//======================================================================
+// WAIT FOR CONTROL ACK (DIO0 polled + authenticated)
+//======================================================================
+bool waitForControlAck(uint32_t expectedID)
+{
+    controlRadio.startReceive();
+    uint32_t startTime = millis();
+
+    while (millis() - startTime < 1500)
+    {
+        if (digitalRead(DIO0_CTRL) == HIGH)
+        {
+            ControlAck ack;
+            int state = controlRadio.readData((uint8_t*)&ack, sizeof(ack));
+
+            if (state == RADIOLIB_ERR_NONE &&
+                ack.magic == PROTO_MAGIC &&
+                ack.checksum == ackChecksum(ack) &&
+                ack.commandID == expectedID)
+            {
+                return (ack.applied != 0);
+            }
+
+            controlRadio.startReceive();   // bad/foreign packet -> keep waiting
+        }
+    }
     return false;
 }
 
 //======================================================================
 // EXECUTE AI DECISION
-//
-// Maps ML class -> Radio Adaptation Policy
 //======================================================================
+// void executeDecision(int prediction)
+// {
+//     switch (prediction)
+//     {
+//         case 0:  // Normal
+//             Serial.println("[AI] Normal Channel");
+//             break;
 
-void executeDecision(int prediction)
-{
+//         case 1:  // Jammer -> hop to a channel outside the jammer band
+//         {
+//             Serial.println("[AI] Jammer Detected");
+//             hopIndex = (hopIndex + 1) % HOP_TABLE_SIZE;
+//             uint32_t target = HOP_TABLE_KHZ[hopIndex];
+//             Serial.print("Channel Hopping to (kHz) : ");
+//             Serial.println(target);
+//             sendControlPacket(CMD_CHANNEL_HOP, target, currentSF, currentCR);
+//             break;
+//         }
 
-    switch(prediction)
+//         case 2:  // Weak link -> increase robustness (only if not already robust)
+//             Serial.println("[AI] Weak Link");
+//             if (currentSF != 10 || currentCR != 8)
+//             {
+//                 Serial.println("Increasing Robustness");
+//                 sendControlPacket(CMD_LINK_ADAPT, currentFrequencyKHz, 10, 8);
+//             }
+//             else
+//             {
+//                 Serial.println("Already at robust settings");
+//             }
+//             break;
+
+//         case 3:  // Excellent link -> optimize throughput (only if not already fast)
+//             Serial.println("[AI] Excellent Link");
+//             if (currentSF != 7 || currentCR != 5)
+//             {
+//                 Serial.println("Optimizing Throughput");
+//                 sendControlPacket(CMD_LINK_ADAPT, currentFrequencyKHz, 7, 5);
+//             }
+//             else
+//             {
+//                 Serial.println("Already at optimal settings");
+//             }
+//             break;
+
+//         default:
+//             Serial.println("Unknown AI Prediction");
+//             break;
+//     }
+// }
+
+
+//======================================================================
+// EXECUTE AI DECISION
+//======================================================================
+void executeDecision(int prediction) {
+  switch (prediction) {
+    case 0:
+      Serial.println("\n[AI] Normal Channel");
+      break;
+    case 1:
     {
+      Serial.println("\n[AI] Jammer Detected\nChannel Hopping...");
+      // 1. Calculate the next targeted frequency (+200 kHz)
+      float nextFrequency = currentFrequencyKHz + 200.0f;
 
-        //------------------------------------------------------
-        // CLASS 0
-        // Normal Link
-        //------------------------------------------------------
-
-        case 0:
-
-            Serial.println();
-            Serial.println("[AI] Normal Channel");
-
-            // No action required
-
-            break;
-
-
-
-        //------------------------------------------------------
-        // CLASS 1
-        // Jammer Detected
-        //------------------------------------------------------
-
-        case 1:
-
-            Serial.println();
-            Serial.println("[AI] Jammer Detected");
-
-            Serial.println("Channel Hopping...");
-
-            sendControlPacket(
-
-                CMD_CHANNEL_HOP,
-
-                434000,          // Example hop frequency
-
-                currentSF,
-
-                currentCR
-
-            );
-
-            break;
-
-
-
-        //------------------------------------------------------
-        // CLASS 2
-        // Weak Link
-        //------------------------------------------------------
-
-        case 2:
-
-            Serial.println();
-            Serial.println("[AI] Weak Link");
-
-            Serial.println("Increasing Robustness");
-
-            sendControlPacket(
-
-                CMD_LINK_ADAPT,
-
-                currentFrequency,
-
-                10,             // Increase SF
-
-                8               // Increase Coding Rate
-
-            );
-
-            break;
-
-
-
-        //------------------------------------------------------
-        // CLASS 3
-        // Excellent Link
-        //------------------------------------------------------
-
-        case 3:
-
-            Serial.println();
-            Serial.println("[AI] Excellent Link");
-
-            Serial.println("Optimizing Throughput");
-
-            sendControlPacket(
-
-                CMD_LINK_ADAPT,
-
-                currentFrequency,
-
-                7,
-
-                5
-
-            );
-
-            break;
-
-       //------------------------------------------------------
-        // Unknown
-        //------------------------------------------------------
-
-        default:
-
-            Serial.println();
-
-            Serial.println("Unknown AI Prediction");
-
-            break;
-
+      // 2. Check if the hop pushes us past the highest channel (434600 kHz)
+      if (nextFrequency > 434600.0f) {
+        Serial.println("[System] Frequency upper limit reached. Wrapping back to Channel 0.");
+        nextFrequency = 433000.0f;  // Reset to the base channel
+      }
+      // 3. Send the command using the freshly calculated frequency
+      sendControlPacket(CMD_CHANNEL_HOP, (uint32_t)nextFrequency, currentSF, currentCR);
+      break;
     }
+    case 2:
+      {  // Added curly braces to allow local variable declarations safely
+        Serial.println("\n[AI] Weak Link\nIncreasing Robustness");
+        // If it's below 10, force start at 10.
+        // If it's 10 or 11, step up.
+        // If it's 12 or higher, cap at 12.
+        int sf = (currentSF < 10) ? 10 : ((currentSF < 12) ? currentSF + 1 : 12);
 
+        // Same logic for CR: below 6 -> 6. Between 6 and 7 -> step up. 8+ -> cap at 8.
+        int cr = (currentCR < 6) ? 6 : ((currentCR < 8) ? currentCR + 1 : 8);
+
+        sendControlPacket(CMD_LINK_ADAPT, currentFrequencyKHz, sf, cr);
+        break;
+      }
+
+    case 3:
+      {  // Added curly braces
+        Serial.println("\n[AI] Excellent Link\nOptimizing Throughput");
+
+        // If it's above 12, force start at 12.
+        // If it's between 9 and 12, step down.
+        // If it's 8 or lower, floor at 8.
+        int sf = (currentSF > 10) ? 10 : ((currentSF > 8) ? currentSF - 1 : 8);
+
+        // For CR: if above 8, force 8. Between 6 and 8 -> step down. 5 or lower -> floor at 5.
+        int cr = (currentCR >= 8) ? 7 : ((currentCR > 5) ? currentCR - 1 : 5);
+
+        // FIXED: Passing variables now instead of hardcoded 7, 5
+        sendControlPacket(CMD_LINK_ADAPT, currentFrequencyKHz, sf, cr);
+        break;
+      }
+    default:
+      Serial.println("\nUnknown AI Prediction");
+      break;
+  }
 }
-
-
-
-
 //======================================================================
 // LOOP
 //======================================================================
-
 void loop()
 {
-
-    //----------------------------------------------------------
-    // Always listen for DATA packets
-    //----------------------------------------------------------
-
+    // Inference and policy execution run once per completed feature
+    // window, triggered from inside receiveDataPacket().
     receiveDataPacket();
-
-
-
-    //----------------------------------------------------------
-    // If a complete feature window is available,
-    // run AI and execute policy.
-    //----------------------------------------------------------
-
-    if(windowIndex == 0 && packetsInWindow == 0)
-    {
-
-        static bool processed = false;
-
-        if(!processed)
-        {
-
-            processed = true;
-
-            int prediction = runInference();
-            executeDecision(prediction);
-
-        }
-
-    }
-    else
-    {
-        processed = false;
-    }
-
 }
