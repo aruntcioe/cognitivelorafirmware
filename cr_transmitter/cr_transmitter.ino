@@ -134,8 +134,8 @@ uint32_t ackChecksum(const ControlAck &a)
 // CURRENT RADIO CONFIGURATION (kHz throughout)
 //======================================================================
 uint32_t currentFrequencyKHz = 433000;
-uint8_t  currentSF           = 8;
-uint8_t  currentCR           = 5;
+uint8_t  currentSF           = 12;
+uint8_t  currentCR           = 8;
 
 //======================================================================
 // CONTROL CHANNEL CONFIGURATION
@@ -150,7 +150,7 @@ const uint8_t CONTROL_CR         = 8;
 uint32_t sequenceNumber      = 0;
 uint32_t lastAppliedCommandID = 0;         // replay / duplicate guard
 
-const uint32_t DATA_INTERVAL = 1000;        // ms
+const uint32_t DATA_INTERVAL = 10;        // ms
 uint32_t lastTransmissionTime = 0;
 
 //======================================================================

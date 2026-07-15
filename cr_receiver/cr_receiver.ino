@@ -63,8 +63,8 @@
 // RADIO CONFIGURATION (kHz throughout, must match transmitter)
 //======================================================================
 uint32_t currentFrequencyKHz = 433000;
-uint8_t  currentSF           = 8;
-uint8_t  currentCR           = 5;
+uint8_t  currentSF           = 12;
+uint8_t  currentCR           = 8;
 
 //======================================================================
 // CONTROL CHANNEL CONFIGURATION
