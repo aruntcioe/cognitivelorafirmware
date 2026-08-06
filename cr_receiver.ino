@@ -289,12 +289,6 @@ void  applyReceiverConfiguration(uint32_t frequencyKHz, uint8_t sf, uint8_t cr);
 float calculateToA();
 float readFrequencyError();
 
-uint32_t getControlTimeoutMs() {
-    uint32_t pingToa = controlRadio.getTimeOnAir(sizeof(ControlPacket)) / 1000UL;
-    uint32_t pongToa = controlRadio.getTimeOnAir(sizeof(ControlAck)) / 1000UL;
-    // Add 500ms safety margin for processing/SPI delay
-    return (pingToa + pongToa) + 800UL; 
-}
 void resetModule(int rstPin) {
     pinMode(rstPin, OUTPUT);
     digitalWrite(rstPin, LOW);
@@ -303,13 +297,6 @@ void resetModule(int rstPin) {
     delay(20);   // give the crystal/oscillator time to stabilize before any
                  // SPI register read is attempted (10ms was marginal and is
                  // the likely cause of the intermittent -2 CHIP_NOT_FOUND)
-}
-
-// In Receiver & Transmitter: Dynamically calculate guard time for Link Adaptation
-uint32_t calculateSafeGuardTimeMs(uint8_t sf) {
-    // High SF (SF10-SF12) requires longer guard time for 2-phase commit sync
-    if (sf >= 10) return 6000; 
-    return 3000;
 }
 
 // ----------------------------------------------------------------------
@@ -580,7 +567,6 @@ void receiveDataPacket()
     if (state == RADIOLIB_ERR_CRC_MISMATCH)
     {
         Serial.println("[DATA] CRC Failure");
-        Serial.println("PKTEVT,CRC_FAIL");
         crcFailuresWindow++;
         consecutiveCRCFailures++;
         lostPacketsWindow++;
@@ -609,11 +595,6 @@ void receiveDataPacket()
 
         Serial.print("[DATA] Foreign/Jammer packet captured (magic mismatch) RSSI=");
         Serial.print(fRSSI); Serial.print(" SNR="); Serial.println(fSNR);
-
-        Serial.print("PKTEVT,JAMMER,");
-        Serial.print(fRSSI, 2); Serial.print(",");
-        Serial.print(fSNR, 2);  Serial.print(",");
-        Serial.println(fCFO, 2);
 
         sumForeignRSSI += fRSSI;
         sumForeignSNR  += fSNR;
@@ -661,16 +642,6 @@ void receiveDataPacket()
     Serial.print("CFO : ");      Serial.println(featureWindow[windowIndex].cfo);
     Serial.println("--------------------------------");
 
-    // ---- Machine-readable per-packet row for the PC-side dashboard ----
-    // PKTROW,sequence,rssi,snr,cfo,sensorValue,timestamp
-    Serial.print("PKTROW,");
-    Serial.print(packet.sequence);                          Serial.print(",");
-    Serial.print(featureWindow[windowIndex].rssi, 2);        Serial.print(",");
-    Serial.print(featureWindow[windowIndex].snr, 2);         Serial.print(",");
-    Serial.print(featureWindow[windowIndex].cfo, 2);         Serial.print(",");
-    Serial.print(packet.sensorValue);                        Serial.print(",");
-    Serial.println(packet.timestamp);
-
     windowIndex++;
     packetsInWindow++;
 
@@ -688,8 +659,6 @@ void receiveDataPacket()
     digitalWrite(LED_ACTIVITY, LOW);
     dataRadio.startReceive();
 }
-
-
 
 //======================================================================
 // PROCESS FEATURE WINDOW
@@ -736,10 +705,6 @@ void processFeatureWindow()
     Serial.print("Prediction = ");
     Serial.println(prediction);
     Serial.println();
-
-    // ---- Machine-readable line for the PC-side dashboard ----
-    Serial.print("AIROW,");
-    Serial.println(prediction);
 
     executeDecision(prediction);
 }
@@ -939,7 +904,7 @@ void beginControlCommand(uint8_t commandType, uint32_t frequencyKHz,
     ctrlInFlight.newFrequencyKHz = frequencyKHz;
     ctrlInFlight.newSF           = sf;
     ctrlInFlight.newCR           = cr;
-    ctrlInFlight.guardTimeMs     = calculateSafeGuardTimeMs(sf);
+    ctrlInFlight.guardTimeMs     = GUARD_TIME_MS;
     ctrlInFlight.checksum        = controlChecksum(ctrlInFlight);
 
     ctrlAttempt = 1;
@@ -971,10 +936,6 @@ void serviceControlPlane()
             currentCR           = pendingCR;
             applyReceiverConfiguration(currentFrequencyKHz, currentSF, currentCR);
             Serial.println("[CTRL] Guard time elapsed - configuration applied");
-            Serial.print("CTRLROW,RX,APPLIED,"); Serial.print(ctrlInFlight.commandID);
-            Serial.print(","); Serial.print(currentFrequencyKHz);
-            Serial.print(","); Serial.print(currentSF);
-            Serial.print(","); Serial.println(currentCR);
             ctrlState = CTRL_IDLE;
         }
         return;   // nothing else to do while waiting out the guard
@@ -997,10 +958,6 @@ void serviceControlPlane()
             if (ctrlState == CTRL_AWAIT_PREPARE_ACK && ack.phase == PHASE_PREPARE)
             {
                 Serial.println("[CTRL] PREPARE_ACK received -> sending COMMIT");
-                Serial.print("CTRLROW,RX,PREPARE_ACK,"); Serial.print(ctrlInFlight.commandID);
-                Serial.print(","); Serial.print(ctrlInFlight.newFrequencyKHz);
-                Serial.print(","); Serial.print(ctrlInFlight.newSF);
-                Serial.print(","); Serial.println(ctrlInFlight.newCR);
 
                 ctrlInFlight.phase    = PHASE_COMMIT;
                 ctrlInFlight.checksum = controlChecksum(ctrlInFlight);
@@ -1013,11 +970,7 @@ void serviceControlPlane()
             if (ctrlState == CTRL_AWAIT_COMMIT_ACK && ack.phase == PHASE_COMMIT)
             {
                 Serial.println("[CTRL] COMMIT_ACK received -> both sides now guard-waiting");
-                Serial.print("CTRLROW,RX,COMMIT_ACK,"); Serial.print(ctrlInFlight.commandID);
-                Serial.print(","); Serial.print(ctrlInFlight.newFrequencyKHz);
-                Serial.print(","); Serial.print(ctrlInFlight.newSF);
-                Serial.print(","); Serial.println(ctrlInFlight.newCR);
-                ctrlGuardApplyAtMs = millis() + calculateSafeGuardTimeMs(currentSF);
+                ctrlGuardApplyAtMs = millis() + GUARD_TIME_MS;
                 ctrlState = CTRL_WAIT_GUARD;
                 return;
             }
@@ -1032,8 +985,6 @@ void serviceControlPlane()
         if (ctrlAttempt >= CTRL_MAX_ATTEMPTS)
         {
             Serial.println("[CTRL] Command failed after retries (config unchanged)");
-            Serial.print("CTRLROW,RX,FAILED,"); Serial.print(ctrlInFlight.commandID);
-            Serial.println(",0,0,0");
             ctrlState = CTRL_IDLE;
             dataRadio.startReceive();   // re-arm data plane just in case
             return;
@@ -1053,8 +1004,9 @@ void serviceControlPlane()
 //======================================================================
 void serviceSyncHeartbeat()
 {
-    if (ctrlState != CTRL_IDLE) return;
+    if (ctrlState != CTRL_IDLE) return;   // don't collide with an in-flight command
 
+    // ---- Awaiting a PONG for the last PING we sent ----
     if (syncAwaitingPong)
     {
         if (digitalRead(DIO0_CTRL) == HIGH)
@@ -1074,42 +1026,47 @@ void serviceSyncHeartbeat()
                 if (matches)
                 {
                     syncMismatchStreak = 0;
-                    Serial.println("SYNCROW,MATCH");
                 }
                 else
                 {
                     syncMismatchStreak++;
+                    Serial.print("[SYNC] Mismatch! RX thinks freq=");
+                    Serial.print(currentFrequencyKHz); Serial.print(" SF=");
+                    Serial.print(currentSF); Serial.print(" CR=");
+                    Serial.print(currentCR);
+                    Serial.print("  |  TX reports freq=");
+                    Serial.print(pong.reportedFreqKHz); Serial.print(" SF=");
+                    Serial.print(pong.reportedSF); Serial.print(" CR=");
+                    Serial.println(pong.reportedCR);
+
                     if (syncMismatchStreak >= SYNC_MISMATCH_LIMIT)
                     {
+                        // Transmitter is the ground truth for what's actually
+                        // on air - pull the receiver back in line with it.
+                        Serial.println("[SYNC] DESYNC CONFIRMED -> forcing receiver to match transmitter");
                         currentFrequencyKHz = pong.reportedFreqKHz;
                         currentSF           = pong.reportedSF;
                         currentCR           = pong.reportedCR;
                         applyReceiverConfiguration(currentFrequencyKHz, currentSF, currentCR);
                         syncMismatchStreak = 0;
-                        Serial.println("SYNCROW,DESYNC_FIXED");
                     }
                 }
                 syncAwaitingPong = false;
-                controlRadio.startReceive(); // Re-arm explicitly!
                 return;
             }
+
             controlRadio.startReceive();
         }
         else if ((int32_t)(millis() - syncDeadlineMs) >= 0)
         {
-            Serial.println("[SYNC] PONG timeout - recovered without dropping data");
-            Serial.println("SYNCROW,TIMEOUT");
+            Serial.println("[SYNC] PONG timeout - will retry next interval");
             syncAwaitingPong = false;
-            controlRadio.startReceive(); // Re-arm explicitly to unblock RX!
         }
         return;
     }
 
+    // ---- Time to send a new PING? ----
     if (millis() - lastSyncSentMs < SYNC_INTERVAL_MS) return;
-    
-    // Prevent sending SYNC while a DATA packet is actively being received on DIO0_DATA
-    if (digitalRead(DIO0_DATA) == HIGH) return; 
-
     lastSyncSentMs = millis();
 
     ControlPacket ping;
@@ -1117,7 +1074,7 @@ void serviceSyncHeartbeat()
     ping.commandID       = ++commandCounter;
     ping.command         = CMD_SYNC_PING;
     ping.phase           = PHASE_NONE;
-    ping.newFrequencyKHz = currentFrequencyKHz;
+    ping.newFrequencyKHz = currentFrequencyKHz;   // what RX believes is active
     ping.newSF           = currentSF;
     ping.newCR           = currentCR;
     ping.guardTimeMs     = 0;
@@ -1128,14 +1085,13 @@ void serviceSyncHeartbeat()
     {
         syncCommandID    = ping.commandID;
         syncAwaitingPong = true;
-        // DYNAMIC TIMEOUT FIX HERE:
-        syncDeadlineMs   = millis() + getControlTimeoutMs();
+        syncDeadlineMs   = millis() + SYNC_REPLY_WINDOW_MS;
         controlRadio.startReceive();
-        Serial.println("SYNCROW,PING_SENT");
     }
     else
     {
-        controlRadio.startReceive();
+        Serial.print("[SYNC] PING TX failed : ");
+        Serial.println(state);
     }
 }
 
