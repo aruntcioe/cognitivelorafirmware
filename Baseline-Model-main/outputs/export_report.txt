@@ -1,0 +1,24 @@
+==============================================================
+FIRMWARE EXPORT + EQUIVALENCE CHECK
+==============================================================
+wrote outputs/baseline_model.h
+   rules          : 4 fixed threshold comparisons
+   C source size  : 1.5 KB
+   thresholds     : {'snr_clear': np.float64(3.0), 'plr_clear': 0.12, 'plr_jammed': 0.5, 'rssi_fading': -118, 'snr_fading': 2}
+   float compares only — no libm, no matrix ops, no malloc
+   (even simpler than the RF model's if/else tree)
+
+--- equivalence: C logic vs Python model ---
+rows checked       : 5234
+identical decisions: 5234 / 5234  (100.0000%)
+PASS — exported C is decision-identical to Python model.
+
+--- usage in ESP32 firmware --------------------------------
+   #include "baseline_model.h"
+   float x[BL_N_FEATURES];
+   x[F_meanRSSI]  = window_mean_rssi;
+   x[F_meanSNR]   = window_mean_snr;
+   x[F_PLR]       = packet_loss_rate;
+   x[F_CRC]       = crc_failure_count;
+   /* ... fill all BL_N_FEATURES ... */
+   uint8_t action = baseline_predict(x);  /* 0=hold 1=hop 2=adapt */

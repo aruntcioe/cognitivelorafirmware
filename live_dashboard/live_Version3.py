@@ -60,7 +60,7 @@ CMD_HISTORY = 12
 # ---- background dataset collection ----
 COLLECT_DIR = "collected_data"
 CSV_HEADER = ["meanRSSI", "varRSSI", "meanSNR", "varSNR", "CFO", "PLR",
-              "CRC", "SF", "CR", "condition", "detected", "review_flag"]
+              "CRC", "SF", "CR", "condition", "detected", "thres_pred","review_flag"]
 
 TEST_CONDITIONS = {1: "JAMMING", 2: "FADING"}
 
@@ -152,6 +152,12 @@ def parse_line(line: str, sink: "queue.Queue"):
         p = line.split(",")
         try:
             sink.put({"type": "ai", "prediction": int(p[1])})
+        except (IndexError, ValueError):
+            sink.put({"type": "raw", "text": line})
+    elif line.startswith("THROW,"):
+        p = line.split(",")
+        try:
+            sink.put({"type": "thres", "prediction": int(p[1])})
         except (IndexError, ValueError):
             sink.put({"type": "raw", "text": line})
 
@@ -271,7 +277,7 @@ class DataLogger:
         self.rows_written = 0
         self.rows_flagged = 0
 
-    def write_window(self, w, detected):
+    def write_window(self, w, detected, thres_pred):
         flag = compute_review_flag(w, self.condition)
         self._w.writerow([
             f"{w['meanRSSI']:.4f}", f"{w['varRSSI']:.4f}",
@@ -280,6 +286,7 @@ class DataLogger:
             int(w['crc']), int(w['sf']), int(w['cr']),
             self.condition,
             detected if detected is not None else "",
+            thres_pred if thres_pred is not None else "",
             flag,
         ])
         self._fh.flush()
@@ -352,6 +359,7 @@ class Dashboard(QtWidgets.QMainWindow):
 
         self.last_window = None
         self.last_prediction = None
+        self.last_thres_pred = None  
         self.ai_history = deque(maxlen=AI_HISTORY)
         self.ai_dirty = True
 
@@ -499,6 +507,9 @@ class Dashboard(QtWidgets.QMainWindow):
         self.lbl_ai_action = QtWidgets.QLabel("")
         self.lbl_ai_action.setStyleSheet("color:#8a8fa3; font-size:11px;")
         v.addWidget(self.lbl_ai_action)
+        self.lbl_thres_verdict = QtWidgets.QLabel("Threshold model: --")
+        self.lbl_thres_verdict.setStyleSheet("color:#8a8fa3; font-size:11px;")
+        v.addWidget(self.lbl_thres_verdict)
         self.lbl_ai_window = QtWidgets.QLabel("RSSI: -- | SNR: -- | CFO: -- | PLR: -- | CRC: -- | SF/CR: --/--")
         self.lbl_ai_window.setStyleSheet("color:#c0c4d0; font-size:11px;")
         self.lbl_ai_window.setWordWrap(True)
@@ -602,7 +613,8 @@ class Dashboard(QtWidgets.QMainWindow):
             self.ai_dirty = True
             # ---- BACKGROUND LOGGING: one row per window, paired with last AI ----
             if self.logger is not None:
-                flag = self.logger.write_window(ev, self.last_prediction)
+                flag = self.logger.write_window(ev, self.last_prediction,
+                                                self.last_thres_pred)
                 if flag:
                     self.log("Window auto-FLAGGED for review (clean during jamming test)", "#f1c40f")
 
@@ -615,6 +627,19 @@ class Dashboard(QtWidgets.QMainWindow):
             self.ai_dirty = True
             self.log(f"AI window verdict: {label} -> {action}", color)
 
+        elif et == "thres":
+            self.last_thres_pred = ev["prediction"]
+            label, _, color = AI_LABELS.get(
+                ev["prediction"], (f"Unknown {ev['prediction']}", "-", "#c0c4d0"))
+            # log agreement/disagreement vs the AI for quick visual comparison
+            if self.last_prediction is not None:
+                agree = (self.last_thres_pred == self.last_prediction)
+                tag = "AGREE" if agree else "DISAGREE"
+                tag_color = "#2ecc71" if agree else "#e74c3c"
+                self.log(f"THRESHOLD verdict: {label}  [{tag} with AI]", tag_color)
+            else:
+                self.log(f"THRESHOLD verdict: {label}", color)
+            self.ai_dirty = True
         elif et == "sync":
             status = ev["status"]
             self.sync_history.append({"t": t, "status": status, "detail": ev.get("detail", {})})
@@ -738,6 +763,16 @@ class Dashboard(QtWidgets.QMainWindow):
             self.lbl_ai_verdict.setStyleSheet(f"font-weight:bold; font-size:14px; color:{latest['color']};")
             self.lbl_ai_action.setText(latest["action"])
             self.lbl_ai_action.setStyleSheet(f"color:{latest['color']}; font-size:11px;")
+
+        if self.last_thres_pred is not None:
+            tlabel, _, tcolor = AI_LABELS.get(
+            self.last_thres_pred, (f"Unknown {self.last_thres_pred}", "-", "#c0c4d0"))
+            agree = (self.last_prediction is not None and
+                     self.last_thres_pred == self.last_prediction)
+            mark = "  ✓ agrees with AI" if agree else "  ✗ differs from AI"
+            self.lbl_thres_verdict.setText(f"Threshold model: {tlabel}{mark}")
+            self.lbl_thres_verdict.setStyleSheet(
+                f"color:{'#2ecc71' if agree else '#e74c3c'}; font-size:11px;")
         self.ai_list.clear()
         for e in self.ai_history:
             text = f"[{e['t']:7.2f}s]  {e['label']:<20}  {e['action']}"

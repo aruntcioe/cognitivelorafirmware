@@ -1,0 +1,10 @@
+Class balance ratio (max/min) = 1.049  -> balanced, no resampling needed
+
+Highly correlated feature pairs (|r| > 0.85):
+   varRSSI    ~ varSNR      r = +0.889
+   SF         ~ CR          r = +0.866
+   (RF is robust to collinearity for accuracy, but it SPLITS the
+    importance between correlated twins -> use permutation
+    importance, not just Gini, when reading Step 9.)
+
+Figures written to figures/

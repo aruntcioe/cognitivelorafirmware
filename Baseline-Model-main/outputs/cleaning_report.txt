@@ -1,0 +1,23 @@
+Raw rows                                 : 5383
+Dropped rows with missing label          : 1
+Recoded '-999' sentinel rows             : 49   (-> RSSI=-140.0, SNR=-20.0, link_lost=1)
+Imputed 'meanToA==0' sentinel rows       : 410   (from (SF,CR) lookup; removes label shortcut)
+Clipped meanRSSI into [  -140.0,   -30.0]  : 0
+Clipped meanSNR  into [   -20.0,    10.0]  : 620
+Clipped CFO      into [-25000.0, 25000.0]  : 0
+Rows: identical features, conflicting label: 28
+    ^ these sit inside the link_lost condition. When zero packets
+      arrive, jamming and fading are indistinguishable by
+      construction -> firmware needs a deterministic fallback.
+Dropped exact duplicate rows             : 148
+Clean rows                               : 5234 (149 removed, 2.8%)
+Dropped meanToA (deterministic fn of SF+CR -> redundant)
+Derived features evaluated and rejected (monotonic -> no value to a
+   tree; measured CV delta -0.0041). Kept 9 base features + link_lost.
+
+Class distribution (clean):
+   class 0 :  1789  ( 34.2%)
+   class 1 :  1740  ( 33.2%)
+   class 2 :  1705  ( 32.6%)
+
+Wrote outputs/dataset_clean.csv   shape=(5234, 11)

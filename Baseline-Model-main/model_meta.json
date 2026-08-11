@@ -1,0 +1,34 @@
+{
+  "model_type": "rule-based-threshold",
+  "features_used": [
+    "meanSNR",
+    "meanRSSI",
+    "PLR",
+    "CRC"
+  ],
+  "features_available": [
+    "meanRSSI",
+    "varRSSI",
+    "meanSNR",
+    "varSNR",
+    "CFO",
+    "PLR",
+    "CRC",
+    "SF",
+    "CR",
+    "link_lost"
+  ],
+  "thresholds": {
+    "snr_clear": 3.0,
+    "plr_clear": 0.12,
+    "plr_jammed": 0.5,
+    "rssi_fading": -118,
+    "snr_fading": 2
+  },
+  "test_accuracy": 0.9321872015281757,
+  "test_macro_f1": 0.9330535194444035,
+  "critical_error_rate": 0.03773584905660377,
+  "safety_gate_passed": false,
+  "n_train": 4187,
+  "n_test": 1047
+}

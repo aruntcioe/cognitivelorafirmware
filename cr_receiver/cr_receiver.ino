@@ -26,6 +26,7 @@
 
 #include <RadioLib.h>
 #include <rf_model.h>
+#include "baseline_model.h"
 #include "jam_engine.h"
 #include <SPI.h>
 
@@ -696,7 +697,15 @@ void processFeatureWindow()
     Serial.print("Current CR : ");    Serial.println(features.currentCR);
     Serial.println("====================================");
 
-    // ---- Machine-readable line for the PC-side logger ----
+    int prediction = runInference();
+    Serial.print("AI Prediction = ");
+    Serial.println(prediction);
+    Serial.println();
+
+    // ---- Machine-readable line for the PC-side dashboard ----
+    Serial.print("AIROW,");
+    Serial.println(prediction);
+        // ---- Machine-readable line for the PC-side logger ----
     // Order MUST match HEADER in getcsv.py:
     // meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR
     Serial.print("CSVROW,");
@@ -710,16 +719,8 @@ void processFeatureWindow()
     Serial.print(features.currentSF);          Serial.print(",");
     Serial.print(features.currentCR);          Serial.print(",");
 
-
-    int prediction = runInference();
-    Serial.print("Prediction = ");
-    Serial.println(prediction);
-    Serial.println();
-
-    // ---- Machine-readable line for the PC-side dashboard ----
-    Serial.print("AIROW,");
-    Serial.println(prediction);
-      jamEngineRecordWindow(prediction,
+////////////////////////////////////////////////////////////////////////////////
+    jamEngineRecordWindow(prediction,
                           features.PLR,
                           features.consecutiveCRCFailures,
                           currentFrequencyKHz,
@@ -836,6 +837,12 @@ int runInference()
     x[F_link_lost] = 0.0f;
 
     uint8_t predicted_class = rf_predict(x);
+    uint8_t predicted_class_thres = baseline_predict(x);
+    Serial.print("THRES Prediction = ");
+    Serial.println(predicted_class_thres);
+    Serial.println();
+    Serial.print("THROW,");
+    Serial.println(predicted_class_thres);
 
     return (int)predicted_class;
 }

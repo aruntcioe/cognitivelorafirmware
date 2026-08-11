@@ -9,7 +9,7 @@
  *   => 42 arms, each remembering its own quality history.
  *
  * WHAT IT DOES
- *   - Records the outcome (PLR / CRC) of every window into the CURRENT arm.
+ *   - Records the outcome (PLR) of every window into the CURRENT arm.
  *   - On a jammer verdict, blacklists the current arm for a cooldown and
  *     selects the best-scoring alternative arm, preferring:
  *        * historically clean channels        (EWMA of packet-loss)

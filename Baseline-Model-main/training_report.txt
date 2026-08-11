@@ -1,0 +1,84 @@
+====================================================================
+STEP 1 : TRAIN / TEST SPLIT
+====================================================================
+features (10) : ['meanRSSI', 'varRSSI', 'meanSNR', 'varSNR', 'CFO', 'PLR', 'CRC', 'SF', 'CR', 'link_lost']
+train (4187, 10)   test (1047, 10)   stratified, seed=42
+(identical split to the Random Forest project)
+
+====================================================================
+STEP 2 : NAIVE EXPERT RULES (domain knowledge only)
+====================================================================
+thresholds (from radio engineering domain knowledge):
+  if SNR > 5.0 and PLR < 0.1      -> clear
+  if CRC > 0 or PLR > 0.5                 -> jammed
+  if RSSI < -120.0 and CRC == 0             -> fading
+  else                                        -> jammed (default)
+
+test accuracy  : 0.8921
+test macro-F1  : 0.8941
+critical error : 8.13%
+
+====================================================================
+STEP 3 : THRESHOLD TUNING (on training set only)
+====================================================================
+sweeping thresholds on training data (no test leakage)...
+evaluated 720 threshold combinations
+best CV macro-F1: 0.9416
+
+optimal thresholds:
+  snr_clear       = 3.0
+  plr_clear       = 0.12
+  plr_jammed      = 0.5
+  rssi_fading     = -118
+  snr_fading      = 2
+
+====================================================================
+STEP 4 : EVALUATION (on held-out test set)
+====================================================================
+test accuracy  : 0.9322
+test macro-F1  : 0.9331
+
+               precision    recall  f1-score   support
+
+Clear/Nominal      0.962     0.911     0.935       358
+    Jammed/PU      0.858     0.971     0.911       348
+Severe fading      0.994     0.915     0.953       341
+
+     accuracy                          0.932      1047
+    macro avg      0.938     0.932     0.933      1047
+ weighted avg      0.938     0.932     0.933      1047
+
+confusion matrix (rows=actual, cols=predicted):
+[[326  32   0]
+ [  8 338   2]
+ [  5  24 312]]
+
+--- SAFETY GATE : class 1 <-> class 2 cross-misclassification ---
+jammed  -> predicted fading : 2 / 348  (0.57%)
+fading  -> predicted jammed : 24 / 341  (7.04%)
+combined critical error rate: 3.77%   FAIL (>1%)
+
+====================================================================
+STEP 5 : CROSS-VALIDATION
+====================================================================
+ 5-fold macro-F1 : 0.9399 +/- 0.0081   folds [0.9463 0.9425 0.948  0.9257 0.9368]
+10-fold macro-F1 : 0.9398 +/- 0.0095   folds [0.9473 0.9454 0.9416 0.9434 0.945  0.9509 0.934  0.9172 0.9434 0.9302]
+
+====================================================================
+STEP 6 : FEATURE USAGE ANALYSIS
+====================================================================
+The rule-based model uses only 4 of the 10 features:
+  USED    : meanSNR, meanRSSI, PLR, CRC
+  IGNORED : varRSSI, varSNR, CFO, SF, CR, link_lost
+(link_lost triggers a deterministic fallback, not a threshold rule)
+
+This is the fundamental limitation: fixed rules cannot combine
+features non-linearly. The Random Forest uses all 10 features
+and captures interactions between them (e.g., low SNR + high
+variance + low CRC -> fading, not jamming).
+
+====================================================================
+STEP 7 : SAVE
+====================================================================
+wrote outputs/baseline_model.pkl
+wrote outputs/model_meta.json

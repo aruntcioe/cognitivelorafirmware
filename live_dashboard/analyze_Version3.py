@@ -1,15 +1,17 @@
 """
 analyze.py -- Offline analysis for the cognitive-radio dataset.
 
-Reads the CSVs written by live.py (columns include condition / detected /
-review_flag) and produces the evidence you need for the presentation:
+Reads the CSVs written by live.py. Columns:
+  meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR,
+  condition,detected,thres_pred,review_flag
 
+Produces the evidence for the presentation:
   1. Dataset summary (rows per condition, flagged counts).
   2. Confusion matrix of AI `detected` vs ground-truth `condition`
      -- both RAW and FLAG-CLEANED (jammer-idle windows removed).
-  3. A THRESHOLD baseline classifier on the same features, so you can
-     show AI vs threshold head-to-head.
-  4. Feature-distribution plots (shows the overlap thresholds can't split).
+  3. On-device THRESHOLD model (`thres_pred`) vs ground-truth, evaluated on
+     the SAME rows as the AI, for a controlled head-to-head.
+  4. Feature-distribution plots (overlap = where thresholds fail).
 
 Usage:
     pip install pandas scikit-learn matplotlib
@@ -24,7 +26,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 
-# class codes: condition/detected use 1=jamming, 2=fading; AI may also emit 0=normal
+# class codes: condition uses 1=jamming, 2=fading; models may also emit 0=normal
 CLASS_NAMES = {0: "Normal", 1: "Jamming", 2: "Fading"}
 
 
@@ -40,33 +42,16 @@ def load(paths):
         print("No CSV files matched.")
         sys.exit(1)
     df = pd.concat(frames, ignore_index=True)
-    # detected may be blank for windows that had no AI verdict yet -> drop those
+
+    # keep only rows that have an AI verdict
     df = df[df["detected"].notna() & (df["detected"] != "")]
     df["detected"] = df["detected"].astype(int)
     df["condition"] = df["condition"].astype(int)
     df["review_flag"] = df["review_flag"].astype(int)
+
+    # thres_pred may be missing/blank in some rows -> leave as-is here,
+    # it is filtered per-analysis below.
     return df
-
-
-# ------------------------------------------------------------ threshold baseline
-def threshold_baseline(df):
-    """A hand-tuned expert-rule classifier for AI-vs-threshold comparison.
-    Rules (deliberately the 'obvious' ones an engineer would write):
-        - jammer: high loss / CRC storm / very low SNR
-        - fading: moderately low SNR with high RSSI variance, few CRC
-        - else  : normal
-    Returns predicted class per row.
-    """
-    preds = []
-    for _, r in df.iterrows():
-        snr, plr, crc, varR = r["meanSNR"], r["PLR"], r["CRC"], r["varRSSI"]
-        if plr >= 0.30 or crc >= 3 or snr < 0:
-            preds.append(1)                      # jamming
-        elif snr < 6 and varR > 2.0:
-            preds.append(2)                      # fading
-        else:
-            preds.append(0)                      # normal
-    return np.array(preds)
 
 
 # ------------------------------------------------------------ reporting
@@ -77,14 +62,15 @@ def show_confusion(y_true, y_pred, title):
     print("labels:", [CLASS_NAMES.get(l, l) for l in labels])
     print(cm)
     print(f"accuracy: {accuracy_score(y_true, y_pred):.3f}")
-    print(classification_report(y_true, y_pred,
-          labels=labels, target_names=[CLASS_NAMES.get(l, str(l)) for l in labels],
-          zero_division=0))
+    print(classification_report(
+        y_true, y_pred, labels=labels,
+        target_names=[CLASS_NAMES.get(l, str(l)) for l in labels],
+        zero_division=0))
     return cm, labels
 
 
 def plot_confusion(cm, labels, title, ax):
-    im = ax.imshow(cm, cmap="Blues")
+    ax.imshow(cm, cmap="Blues")
     ax.set_title(title, fontsize=10)
     ax.set_xticks(range(len(labels)))
     ax.set_yticks(range(len(labels)))
@@ -95,11 +81,12 @@ def plot_confusion(cm, labels, title, ax):
     for i in range(len(labels)):
         for j in range(len(labels)):
             ax.text(j, i, cm[i, j], ha="center", va="center",
-                    color="black" if cm[i, j] < cm.max() / 2 else "white", fontsize=9)
+                    color="black" if cm[i, j] < cm.max() / 2 else "white",
+                    fontsize=9)
 
 
 def plot_feature_overlap(df):
-    """Histograms of SNR / PLR by ground-truth condition -- visually shows
+    """Histograms of SNR / PLR / varRSSI by ground-truth condition -- shows
     why a single threshold can't cleanly separate jamming from fading."""
     fig, axes = plt.subplots(1, 3, figsize=(14, 4))
     for ax, feat, name in zip(axes,
@@ -137,31 +124,53 @@ def main():
     print(f"\nafter removing {df['review_flag'].sum()} flagged rows: "
           f"{len(clean)} rows for fair evaluation")
 
-    # ---- 2. AI detected vs ground truth ----
-    show_confusion(df["condition"], df["detected"], "AI vs Truth  (RAW, all rows)")
-    cm_ai, lab_ai = show_confusion(clean["condition"], clean["detected"],
-                                   "AI vs Truth  (FLAG-CLEANED)")
+    # ---- 2. AI vs ground truth (raw + cleaned) ----
+    show_confusion(df["condition"], df["detected"],
+                   "AI vs Truth  (RAW, all rows)")
 
-    # ---- 3. threshold baseline vs ground truth (cleaned) ----
-    thr_pred = threshold_baseline(clean)
-    cm_thr, lab_thr = show_confusion(clean["condition"], thr_pred,
-                                     "THRESHOLD baseline vs Truth  (FLAG-CLEANED)")
+    # ---- 3. controlled head-to-head: evaluate BOTH models on the SAME rows ----
+    # (flag-cleaned rows that have BOTH an AI verdict and a threshold verdict)
+    both = clean[
+        clean["thres_pred"].notna() & (clean["thres_pred"] != "")
+    ].copy()
+    both["thres_pred"] = both["thres_pred"].astype(int)
+
+    if len(both) == 0:
+        print("\n[WARN] No rows have a threshold prediction (thres_pred). "
+              "Is the firmware emitting THROW lines? Skipping threshold "
+              "comparison; showing AI-only cleaned matrix.")
+        cm_ai, lab_ai = show_confusion(clean["condition"], clean["detected"],
+                                       "AI vs Truth (FLAG-CLEANED)")
+        plot_feature_overlap(clean)
+        plt.show()
+        return
+
+    cm_ai, lab_ai = show_confusion(
+        both["condition"], both["detected"],
+        "AI vs Truth  (FLAG-CLEANED, same rows)")
+    cm_thr, lab_thr = show_confusion(
+        both["condition"], both["thres_pred"],
+        "ON-DEVICE THRESHOLD vs Truth  (FLAG-CLEANED, same rows)")
 
     # ---- 4. plots ----
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.5))
-    plot_confusion(cm_ai, lab_ai, "AI (Random Forest)", ax1)
-    plot_confusion(cm_thr, lab_thr, "Threshold baseline", ax2)
-    fig.suptitle("AI vs Threshold -- confusion matrices (cleaned data)", fontsize=12)
+    plot_confusion(cm_ai,  lab_ai,  "AI (Random Forest)",  ax1)
+    plot_confusion(cm_thr, lab_thr, "On-device Threshold", ax2)
+    fig.suptitle("AI vs Threshold -- confusion matrices (cleaned, same rows)",
+                 fontsize=12)
     fig.tight_layout()
 
-    plot_feature_overlap(clean)
+    plot_feature_overlap(both)
 
     # ---- headline numbers for the slide ----
+    ai_acc  = accuracy_score(both["condition"], both["detected"])
+    thr_acc = accuracy_score(both["condition"], both["thres_pred"])
     print("\n" + "=" * 55)
-    print(" HEADLINE (cleaned data)")
+    print(" HEADLINE (cleaned data, same rows)")
     print("=" * 55)
-    print(f"  AI accuracy        : {accuracy_score(clean['condition'], clean['detected']):.3f}")
-    print(f"  Threshold accuracy : {accuracy_score(clean['condition'], thr_pred):.3f}")
+    print(f"  evaluation rows    : {len(both)}")
+    print(f"  AI accuracy        : {ai_acc:.3f}")
+    print(f"  Threshold accuracy : {thr_acc:.3f}")
     print("  -> Look at the off-diagonal Jamming<->Fading cells:")
     print("     the threshold confuses them where features overlap;")
     print("     the RF separates them. That is your thesis.")
