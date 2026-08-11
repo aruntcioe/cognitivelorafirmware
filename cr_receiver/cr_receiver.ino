@@ -1224,10 +1224,6 @@ void executeDecision(int prediction) {
       break;
 case 1:
 {
-    // --- Settling lockout: don't stack a new hop on top of a hop whose
-    //     effect we haven't observed yet. Observe first, then decide. ---
-    bool settledByTime    = (int32_t)(millis() - settleUntilMs) >= 0;
-    bool settledByWindows = (windowsSinceHop >= SETTLE_WINDOWS);
 
     if (!actionAllowed())
     {
@@ -1254,7 +1250,8 @@ case 1:
         
         if (!actionAllowed()) {
            Serial.println("CTRLROW,RX,LINK_SETTLING_SKIP,0,0,0,0");
-                          }
+            break; 
+           }
         // If it's below 10, force start at 10.
         // If it's 10 or 11, step up.
         // If it's 12 or higher, cap at 12.
@@ -1264,27 +1261,10 @@ case 1:
         int cr = (currentCR < 6) ? 6 : ((currentCR < 8) ? currentCR + 1 : 8);
 
         beginControlCommand(CMD_LINK_ADAPT, currentFrequencyKHz, sf, cr);
-        jamEngineResetStreak();
+        jamEngineResetStreak(); // fading != jamming: reset escalation
         break;
       }
 
-    case 3:
-      {  // Added curly braces
-        Serial.println("\n[AI] Excellent Link\nOptimizing Throughput");
-
-        // If it's above 12, force start at 12.
-        // If it's between 9 and 12, step down.
-        // If it's 8 or lower, floor at 8.
-        int sf = (currentSF > 10) ? 10 : ((currentSF > 8) ? currentSF - 1 : 8);
-
-        // For CR: if above 8, force 8. Between 6 and 8 -> step down. 5 or lower -> floor at 5.
-        int cr = (currentCR >= 8) ? 7 : ((currentCR > 5) ? currentCR - 1 : 5);
-
-        // FIXED: Passing variables now instead of hardcoded 7, 5
-        beginControlCommand(CMD_LINK_ADAPT, currentFrequencyKHz, sf, cr);
-        jamEngineResetStreak();
-        break;
-      }
     default:
       Serial.println("\nUnknown AI Prediction");
       break;
