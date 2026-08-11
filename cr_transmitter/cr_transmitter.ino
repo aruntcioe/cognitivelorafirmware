@@ -183,7 +183,7 @@ uint32_t preparedFreqKHz     = 0;         // config proposed by the pending PREP
 uint8_t  preparedSF          = 0;
 uint8_t  preparedCR          = 0;
 
-const uint32_t DATA_INTERVAL = 2000;        // ms
+const uint32_t DATA_INTERVAL = 500;        // ms
 uint32_t lastTransmissionTime = 0;
 
 //======================================================================
@@ -556,14 +556,17 @@ void serviceGuardApply()
 //======================================================================
 void loop()
 {
-    // 1. Service the control plane (PREPARE/COMMIT/SYNC) - non-blocking.
     checkControlPlane();
-
-    // 2. Apply any committed config once its guard time has elapsed.
     serviceGuardApply();
 
+    // Pause data TX during the reconfiguration transient.
+    // From COMMIT-accepted (pendingApply=true) until the new config is
+    // applied by serviceGuardApply(), stay quiet so no packet straddles
+    // the channel/SF switch and gets counted as loss on the receiver.
+
     // 3. Periodically transmit application data.
-    if (millis() - lastTransmissionTime >= DATA_INTERVAL)
+ if (!pendingApply &&
+        (millis() - lastTransmissionTime >= DATA_INTERVAL))
     {
         lastTransmissionTime = millis();
         sendDataPacket();

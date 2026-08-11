@@ -26,6 +26,7 @@
 
 #include <RadioLib.h>
 #include <rf_model.h>
+#include "jam_engine.h"
 #include <SPI.h>
 
 //======================================================================
@@ -87,11 +88,13 @@ const uint8_t  HOP_TABLE_SIZE  = sizeof(HOP_TABLE_KHZ) / sizeof(HOP_TABLE_KHZ[0]
 int hopIndex = -1;
 
 uint32_t windowStartTime = 0;
-const uint32_t WINDOW_TIMEOUT_MS = 20000; 
+
 // ---- add these globals near your other window-state variables ----
 float sumForeignRSSI = 0, sumForeignSNR = 0, sumForeignCFO = 0;
 int   foreignCount = 0;
 
+
+uint32_t pendingGuardMs = 0;   // the guardTimeMs we advertised in this command's packet
 //======================================================================
 // SHARED SPI BUS
 //======================================================================
@@ -111,6 +114,11 @@ SX1278 controlRadio = new Module(
 //======================================================================
 static const uint32_t PROTO_MAGIC  = 0xC0DEA5A5UL;
 static const uint32_t PROTO_SECRET = 0x5A17C0DEUL;
+
+uint32_t settleUntilMs      = 0;   // no jamming actions allowed until this time
+uint8_t  windowsSinceHop    = 0;   // fresh windows observed on the new config
+const uint8_t  SETTLE_WINDOWS  = 2;      // require >=2 fresh windows before acting again
+const uint32_t SETTLE_MIN_MS   = 8000;   // and at least this long (covers SF12 settle)
 
 #pragma pack(push, 1)
 struct DataPacket
@@ -263,13 +271,23 @@ uint8_t  pendingCR          = 0;
 // SYNC HEARTBEAT STATE
 //======================================================================
 uint32_t lastSyncSentMs      = 0;
-const uint32_t SYNC_INTERVAL_MS   = 8000;   // only fires while ctrlState == CTRL_IDLE
+const uint32_t SYNC_INTERVAL_MS   = 30000;   // only fires while ctrlState == CTRL_IDLE
 const uint32_t SYNC_REPLY_WINDOW_MS = 2500;
 bool     syncAwaitingPong     = false;
 uint32_t syncDeadlineMs       = 0;
 uint32_t syncCommandID        = 0;
 uint8_t  syncMismatchStreak   = 0;
 const uint8_t SYNC_MISMATCH_LIMIT = 2;   // consecutive mismatches before forcing a fix
+//======================================================================
+// SYNC HEARTBEAT STATE
+//======================================================================
+enum SyncPhase : uint8_t
+{
+    SYNC_PHASE_IDLE   = 0,
+    SYNC_PHASE_TXING  = 1,   // PING is on the air (non-blocking transmit in progress)
+    SYNC_PHASE_WAIT   = 2    // PING sent, waiting for PONG
+};
+SyncPhase syncPhase = SYNC_PHASE_IDLE;
 
 //======================================================================
 // FUNCTION DECLARATIONS
@@ -312,60 +330,27 @@ uint32_t calculateSafeGuardTimeMs(uint8_t sf) {
     return 3000;
 }
 
-// ----------------------------------------------------------------------
-// RAW SPI DIAGNOSTIC (bypasses RadioLib entirely)
-// Reads SX127x RegVersion (0x42) directly so we can tell wiring/hardware
-// faults apart from a RadioLib-level problem. Expected value is 0x12 for
-// a genuine SX1276/77/78/79.
-// ----------------------------------------------------------------------
-uint8_t readVersionRegisterRaw(int nssPin) {
-    pinMode(nssPin, OUTPUT);
-    digitalWrite(nssPin, HIGH);
+// Replace the fixed constant with a function
+uint32_t getWindowTimeoutMs()
+{
+    // Expected time for a full window of packets, plus margin.
+    // getTimeOnAir returns microseconds for the CURRENT data-radio config.
+    uint32_t toaMs = dataRadio.getTimeOnAir(sizeof(DataPacket)) / 1000UL;
 
-    sharedSPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
-    digitalWrite(nssPin, LOW);
-    sharedSPI.transfer(0x42 & 0x7F);   // read command for RegVersion
-    uint8_t val = sharedSPI.transfer(0x00);
-    digitalWrite(nssPin, HIGH);
-    sharedSPI.endTransaction();
+    // Assume TX sends roughly one packet per (ToA + fixed inter-packet gap).
+    // Tune INTERPKT_GAP_MS to match your transmitter's send cadence.
+    // const uint32_t INTERPKT_GAP_MS = 500;
+    uint32_t perPacket = 500;
 
-    return val;
+    // Wait long enough to *reasonably* fill a window, then flush.
+    // 1.5x gives slack for a few missed packets without over-waiting.
+    uint32_t timeout = (uint32_t)(perPacket * FEATURE_WINDOW_SIZE * 1.5f);
+
+    // Clamp to sane bounds so a bad config can't hang or thrash the loop.
+    if (timeout < 3000)  timeout = 3000;
+    if (timeout > 10000) timeout = 10000;
+    return timeout;
 }
-
-void runSpiDiagnostics() {
-    Serial.println("--------------------------------------");
-    Serial.println("[DIAG] Raw SPI RegVersion read (bypassing RadioLib)");
-    Serial.println("--------------------------------------");
-
-    uint8_t verData = readVersionRegisterRaw(NSS_DATA);
-    Serial.print("[DIAG] DATA  radio (NSS="); Serial.print(NSS_DATA);
-    Serial.print(") RegVersion = 0x"); Serial.println(verData, HEX);
-
-    uint8_t verCtrl = readVersionRegisterRaw(NSS_CTRL);
-    Serial.print("[DIAG] CTRL  radio (NSS="); Serial.print(NSS_CTRL);
-    Serial.print(") RegVersion = 0x"); Serial.println(verCtrl, HEX);
-
-    if (verData == 0x12) Serial.println("[DIAG] DATA radio: chip responds correctly at raw SPI level!");
-    else if (verData == 0x00) Serial.println("[DIAG] DATA radio: 0x00 -> MISO stuck low / module likely unpowered or GND not connected");
-    else if (verData == 0xFF) Serial.println("[DIAG] DATA radio: 0xFF -> MISO floating (not connected) or chip has no VCC");
-    else if (verData == 0x42) Serial.println("[DIAG] DATA radio: echoed the command byte -> MOSI/MISO are very likely swapped or shorted");
-    else Serial.println("[DIAG] DATA radio: unexpected value -> check NSS/SCK wiring, or you may be reading the wrong module");
-
-    Serial.println();
-}
-
-// Decodes the handful of RadioLib codes that actually show up during begin(),
-// so failures are self-explanatory in the serial log instead of just a number.
-const char* radiolibErrToStr(int state) {
-    switch (state) {
-        case RADIOLIB_ERR_NONE:            return "OK";
-        case RADIOLIB_ERR_CHIP_NOT_FOUND:  return "CHIP_NOT_FOUND (-2): SPI replied but version register mismatch - check wiring/RST timing/power";
-        case RADIOLIB_ERR_SPI_CMD_FAILED:  return "SPI_CMD_FAILED";
-        case RADIOLIB_ERR_INVALID_FREQUENCY: return "INVALID_FREQUENCY";
-        default:                            return "see RadioLib error code table";
-    }
-}
-
 //======================================================================
 // SETUP
 //======================================================================
@@ -388,16 +373,11 @@ void setup()
     Serial.println("======================================");
     Serial.println(" AI Cognitive Radio Receiver");
     Serial.println("======================================");
-resetModule(RST_DATA);
-resetModule(RST_CTRL);
-    // Pass -1 for the SS pin: RadioLib manually toggles NSS for each Module
-    // object since this bus is shared between two radios. Letting the ESP32
-    // SPI driver ALSO treat NSS_DATA as a hardware-managed CS pin fights with
-    // that manual control and is a likely contributor to the intermittent -2.
+    resetModule(RST_DATA);
+    resetModule(RST_CTRL);
+
     sharedSPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, -1);
     delay(20);   // let the bus/power rail settle before the first transaction
-
-    runSpiDiagnostics();
 
     if (!initializeDataRadio())
     {
@@ -412,7 +392,7 @@ resetModule(RST_CTRL);
     }
 
     dataRadio.startReceive();        // arm data plane (DIO0 -> RxDone)
-
+    jamEngineInit(currentFrequencyKHz, currentSF);
     Serial.println();
     Serial.println("Receiver Ready");
     Serial.println();
@@ -448,8 +428,7 @@ bool initializeDataRadio()
         Serial.print("Attempt "); Serial.print(attempt); Serial.print("/");
         Serial.print(MAX_INIT_ATTEMPTS);
         Serial.print(" failed : "); Serial.print(state);
-        Serial.print(" -> "); Serial.println(radiolibErrToStr(state));
-
+       
         resetModule(RST_DATA);   // re-toggle RST before retrying
         delay(50);
     }
@@ -497,8 +476,7 @@ bool initializeControlRadio()
         Serial.print("Attempt "); Serial.print(attempt); Serial.print("/");
         Serial.print(MAX_INIT_ATTEMPTS);
         Serial.print(" failed : "); Serial.print(state);
-        Serial.print(" -> "); Serial.println(radiolibErrToStr(state));
-
+   
         resetModule(RST_CTRL);   // re-toggle RST before retrying
         delay(50);
     }
@@ -547,9 +525,11 @@ void receiveDataPacket()
 
     if (digitalRead(DIO0_DATA) == LOW)
     {
+        if (ctrlState == CTRL_WAIT_GUARD || ctrlState == CTRL_AWAIT_COMMIT_ACK) return;
+        uint32_t windowTimeout = getWindowTimeoutMs();
         // no packet yet -- check if window has timed out
-        if (millis() - windowStartTime > WINDOW_TIMEOUT_MS &&
-            (packetsInWindow > 6 || foreignCount > 0))
+        if (millis() - windowStartTime > windowTimeout &&
+            (packetsInWindow > 0 || foreignCount > 0))
         {
             processFeatureWindow();   // flush, using real OR foreign-capture stats
             windowIndex = 0; 
@@ -562,10 +542,9 @@ void receiveDataPacket()
             foreignCount = 0;
             windowStartTime = millis();
         }
-        else if (millis() - windowStartTime > WINDOW_TIMEOUT_MS &&
+        else if (millis() - windowStartTime > windowTimeout &&
                  packetsInWindow == 0 && foreignCount == 0)
         {
-            // TRUE silence: nothing decoded at all, not even jammer preamble.
             // This really is undefined -- keep the sentinel only for this case.
             Serial.println("CSVROW,-999,0,-999,0,0,1.0000,0,0,0,0");
             windowStartTime = millis();
@@ -576,7 +555,6 @@ void receiveDataPacket()
     DataPacket packet;
     int state = dataRadio.readData((uint8_t*)&packet, sizeof(packet));
 
-    // ---- CRC error ----
     if (state == RADIOLIB_ERR_CRC_MISMATCH)
     {
         Serial.println("[DATA] CRC Failure");
@@ -584,6 +562,7 @@ void receiveDataPacket()
         crcFailuresWindow++;
         consecutiveCRCFailures++;
         lostPacketsWindow++;
+        windowIndex++;
         dataRadio.startReceive();
         return;
     }
@@ -592,12 +571,12 @@ void receiveDataPacket()
     if (state != RADIOLIB_ERR_NONE)
     {
         Serial.print("[DATA] RX Error : ");
+        lostPacketsWindow++;
         Serial.println(state);
         dataRadio.startReceive();
         return;
     }
 
-    // ---- CRC passed, but check WHO actually sent it ----
     if (packet.magic != PROTO_SECRET)
     {
         // Foreign/jammer packet -- CRC passed so RadioLib's RSSI/SNR/CFO
@@ -696,6 +675,7 @@ void receiveDataPacket()
 //======================================================================
 void processFeatureWindow()
 {
+    if (windowsSinceHop < 255) windowsSinceHop++;
     Serial.println();
     Serial.println("=======================================");
     Serial.println(" Feature Window Complete");
@@ -718,7 +698,7 @@ void processFeatureWindow()
 
     // ---- Machine-readable line for the PC-side logger ----
     // Order MUST match HEADER in getcsv.py:
-    // meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR,meanToA
+    // meanRSSI,varRSSI,meanSNR,varSNR,CFO,PLR,CRC,SF,CR
     Serial.print("CSVROW,");
     Serial.print(features.meanRSSI, 4);        Serial.print(",");
     Serial.print(features.varRSSI, 4);         Serial.print(",");
@@ -731,7 +711,6 @@ void processFeatureWindow()
     Serial.print(features.currentCR);          Serial.print(",");
 
 
-    // ---- Inference (replace with TinyML / Random Forest later) ----
     int prediction = runInference();
     Serial.print("Prediction = ");
     Serial.println(prediction);
@@ -740,7 +719,11 @@ void processFeatureWindow()
     // ---- Machine-readable line for the PC-side dashboard ----
     Serial.print("AIROW,");
     Serial.println(prediction);
-
+      jamEngineRecordWindow(prediction,
+                          features.PLR,
+                          features.consecutiveCRCFailures,
+                          currentFrequencyKHz,
+                          currentSF);
     executeDecision(prediction);
 }
 //======================================================================
@@ -748,11 +731,7 @@ void processFeatureWindow()
 //======================================================================
 void extractFeatures()
 {
-    // Use the ACTUAL packet count, not the fixed window size --
-    // a timed-out window (heavy jamming) may close with fewer than
-    // FEATURE_WINDOW_SIZE packets, or even zero.
     int n = packetsInWindow;
-
     if (n == 0)
     {
         // Total loss: no packets arrived this window at all.
@@ -835,17 +814,7 @@ void extractFeatures()
     features.currentCR = currentCR;
 }
 
-//======================================================================
-// RUN AI INFERENCE  (placeholder heuristic)
-//
-// Output class:
-//   0 = Normal
-//   1 = Jammer
-//   2 = Weak Link
-//   3 = Excellent Link
-//
-// Replace with Random Forest / TinyML / TensorFlow Lite / Edge Impulse.
-//======================================================================
+
 int runInference()
 {
     // 1. Create a float array matching the required feature count
@@ -864,12 +833,8 @@ int runInference()
     x[F_SF]        = (float)features.currentSF;
     x[F_CR]        = (float)features.currentCR;
     
-    // Calculate or pass the boolean flag for link loss (1.0f or 0.0f)
-    // Adjust this condition to match your firmware's definition of link lost
-    // x[F_link_lost] = (features.PLR >= 1.0f || features.consecutiveCRCFailures > 10) ? 1.0f : 0.0f;
     x[F_link_lost] = 0.0f;
 
-    // 3. Call the inference model and return the predicted class
     uint8_t predicted_class = rf_predict(x);
 
     return (int)predicted_class;
@@ -940,6 +905,7 @@ void beginControlCommand(uint8_t commandType, uint32_t frequencyKHz,
     ctrlInFlight.newSF           = sf;
     ctrlInFlight.newCR           = cr;
     ctrlInFlight.guardTimeMs     = calculateSafeGuardTimeMs(sf);
+    pendingGuardMs               = ctrlInFlight.guardTimeMs; 
     ctrlInFlight.checksum        = controlChecksum(ctrlInFlight);
 
     ctrlAttempt = 1;
@@ -970,6 +936,17 @@ void serviceControlPlane()
             currentSF           = pendingSF;
             currentCR           = pendingCR;
             applyReceiverConfiguration(currentFrequencyKHz, currentSF, currentCR);
+               // Discard any partial window built on the OLD config / during transition
+            windowIndex        = 0;
+            packetsInWindow    = 0;
+            lostPacketsWindow  = 0;
+            crcFailuresWindow  = 0;
+            sumForeignRSSI = 0; sumForeignSNR = 0; sumForeignCFO = 0; foreignCount = 0;
+            firstPacket        = true;      // <-- critical: don't count the seq gap across the hop
+            settleUntilMs    = millis() + SETTLE_MIN_MS;
+            windowsSinceHop  = 0;
+            Serial.println("[CTRL] Entering post-hop settling window");
+            windowStartTime    = millis();
             Serial.println("[CTRL] Guard time elapsed - configuration applied");
             Serial.print("CTRLROW,RX,APPLIED,"); Serial.print(ctrlInFlight.commandID);
             Serial.print(","); Serial.print(currentFrequencyKHz);
@@ -1017,7 +994,14 @@ void serviceControlPlane()
                 Serial.print(","); Serial.print(ctrlInFlight.newFrequencyKHz);
                 Serial.print(","); Serial.print(ctrlInFlight.newSF);
                 Serial.print(","); Serial.println(ctrlInFlight.newCR);
-                ctrlGuardApplyAtMs = millis() + calculateSafeGuardTimeMs(currentSF);
+                uint32_t cmdToaMs = controlRadio.getTimeOnAir(sizeof(ControlPacket)) / 1000UL;
+                uint32_t ackToaMs = controlRadio.getTimeOnAir(sizeof(ControlAck))    / 1000UL;
+                uint32_t roundTripMs = cmdToaMs + ackToaMs;   // COMMIT out + COMMIT_ACK back
+               
+                uint32_t remainingGuard = (pendingGuardMs > roundTripMs)
+                                ? (pendingGuardMs - roundTripMs)
+                                : 0;
+                ctrlGuardApplyAtMs = millis() + remainingGuard;
                 ctrlState = CTRL_WAIT_GUARD;
                 return;
             }
@@ -1047,15 +1031,33 @@ void serviceControlPlane()
     }
 }
 
-//======================================================================
-// SYNC HEARTBEAT - periodically verify both radios agree on the current
-// data-plane config; only runs while the control plane is otherwise idle.
-//======================================================================
 void serviceSyncHeartbeat()
 {
     if (ctrlState != CTRL_IDLE) return;
 
-    if (syncAwaitingPong)
+    // ================================================================
+    // PHASE: PING transmit in progress (NON-BLOCKING) -- CHANGE #1
+    // We started the PING with startTransmit(); wait for TxDone on
+    // DIO0_CTRL. Crucially, receiveDataPacket() keeps running every
+    // loop() iteration while this air-time (~1.5s at SF12) elapses.
+    // ================================================================
+    if (syncPhase == SYNC_PHASE_TXING)
+    {
+        if (digitalRead(DIO0_CTRL) == HIGH)
+        {
+            controlRadio.finishTransmit();          // clear TxDone / flush
+            controlRadio.startReceive();            // now listen for the PONG
+            syncPhase      = SYNC_PHASE_WAIT;
+            syncDeadlineMs = millis() + getControlTimeoutMs();
+            Serial.println("SYNCROW,PING_SENT");
+        }
+        return;   // do nothing else until the PING finishes going out
+    }
+
+    // ================================================================
+    // PHASE: waiting for PONG (unchanged logic, driven by syncPhase)
+    // ================================================================
+    if (syncPhase == SYNC_PHASE_WAIT)
     {
         if (digitalRead(DIO0_CTRL) == HIGH)
         {
@@ -1068,8 +1070,8 @@ void serviceSyncHeartbeat()
                 pong.commandID == syncCommandID)
             {
                 bool matches = (pong.reportedFreqKHz == currentFrequencyKHz &&
-                                 pong.reportedSF      == currentSF &&
-                                 pong.reportedCR      == currentCR);
+                                pong.reportedSF      == currentSF &&
+                                pong.reportedCR      == currentCR);
 
                 if (matches)
                 {
@@ -1085,30 +1087,42 @@ void serviceSyncHeartbeat()
                         currentSF           = pong.reportedSF;
                         currentCR           = pong.reportedCR;
                         applyReceiverConfiguration(currentFrequencyKHz, currentSF, currentCR);
+                        // Discard partial window built on OLD config
+                        windowIndex = 0; packetsInWindow = 0;
+                        lostPacketsWindow = 0; crcFailuresWindow = 0;
+                        sumForeignRSSI = 0; sumForeignSNR = 0; sumForeignCFO = 0; foreignCount = 0;
+                        firstPacket = true;
+                        settleUntilMs    = millis() + SETTLE_MIN_MS;
+                        windowsSinceHop  = 0;
+                        Serial.println("[CTRL] Entering post-hop settling window");
+                        windowStartTime = millis();
                         syncMismatchStreak = 0;
                         Serial.println("SYNCROW,DESYNC_FIXED");
                     }
                 }
-                syncAwaitingPong = false;
-                controlRadio.startReceive(); // Re-arm explicitly!
+                syncPhase = SYNC_PHASE_IDLE;
+                controlRadio.startReceive();
                 return;
             }
-            controlRadio.startReceive();
+            controlRadio.startReceive();   // stray packet, keep waiting
         }
         else if ((int32_t)(millis() - syncDeadlineMs) >= 0)
         {
-            Serial.println("[SYNC] PONG timeout - recovered without dropping data");
             Serial.println("SYNCROW,TIMEOUT");
-            syncAwaitingPong = false;
-            controlRadio.startReceive(); // Re-arm explicitly to unblock RX!
+            syncPhase = SYNC_PHASE_IDLE;
+            controlRadio.startReceive();
         }
         return;
     }
 
+    // ================================================================
+    // PHASE: IDLE -- decide whether to KICK OFF a new PING -- CHANGE #2
+    // ================================================================
     if (millis() - lastSyncSentMs < SYNC_INTERVAL_MS) return;
-    
-    // Prevent sending SYNC while a DATA packet is actively being received on DIO0_DATA
-    if (digitalRead(DIO0_DATA) == HIGH) return; 
+
+    // Don't even START a PING if a DATA packet is currently pending on
+    // the data radio -- service it first this iteration.
+    if (digitalRead(DIO0_DATA) == HIGH) return;
 
     lastSyncSentMs = millis();
 
@@ -1123,19 +1137,20 @@ void serviceSyncHeartbeat()
     ping.guardTimeMs     = 0;
     ping.checksum        = controlChecksum(ping);
 
-    int state = controlRadio.transmit((uint8_t*)&ping, sizeof(ping));
+    // --- CHANGE #3: NON-BLOCKING transmit ---
+    // startTransmit() returns immediately; the radio sends in the
+    // background and raises DIO0_CTRL when done. We handle that above.
+    int state = controlRadio.startTransmit((uint8_t*)&ping, sizeof(ping));
     if (state == RADIOLIB_ERR_NONE)
     {
-        syncCommandID    = ping.commandID;
-        syncAwaitingPong = true;
-        // DYNAMIC TIMEOUT FIX HERE:
-        syncDeadlineMs   = millis() + getControlTimeoutMs();
-        controlRadio.startReceive();
-        Serial.println("SYNCROW,PING_SENT");
+        syncCommandID = ping.commandID;
+        syncPhase     = SYNC_PHASE_TXING;   // wait for TxDone, don't block
     }
     else
     {
+        Serial.print("[SYNC] startTransmit failed: "); Serial.println(state);
         controlRadio.startReceive();
+        syncPhase = SYNC_PHASE_IDLE;
     }
 }
 
@@ -1192,7 +1207,11 @@ void serviceSyncHeartbeat()
 //             break;
 //     }
 // }
-
+bool actionAllowed() {
+    return ((int32_t)(millis() - settleUntilMs) >= 0) &&
+           (windowsSinceHop >= SETTLE_WINDOWS) &&
+           (ctrlState == CTRL_IDLE);
+}
 
 //======================================================================
 // EXECUTE AI DECISION
@@ -1201,25 +1220,41 @@ void executeDecision(int prediction) {
   switch (prediction) {
     case 0:
       Serial.println("\n[AI] Normal Channel");
+      jamEngineResetStreak();
       break;
-    case 1:
-    {
-      Serial.println("\n[AI] Jammer Detected\nChannel Hopping...");
-      // 1. Calculate the next targeted frequency (+200 kHz)
-      float nextFrequency = currentFrequencyKHz + 200.0f;
+case 1:
+{
+    // --- Settling lockout: don't stack a new hop on top of a hop whose
+    //     effect we haven't observed yet. Observe first, then decide. ---
+    bool settledByTime    = (int32_t)(millis() - settleUntilMs) >= 0;
+    bool settledByWindows = (windowsSinceHop >= SETTLE_WINDOWS);
 
-      // 2. Check if the hop pushes us past the highest channel (434600 kHz)
-      if (nextFrequency > 434600.0f) {
-        Serial.println("[System] Frequency upper limit reached. Wrapping back to Channel 0.");
-        nextFrequency = 433000.0f;  // Reset to the base channel
-      }
-      // 3. Send the command using the freshly calculated frequency
-      beginControlCommand(CMD_CHANNEL_HOP, (uint32_t)nextFrequency, currentSF, currentCR);
-      break;
+    if (!actionAllowed())
+    {
+        Serial.print("[AI] Jammer verdict IGNORED - still settling (");
+        Serial.print(windowsSinceHop); Serial.print("/");
+        Serial.print(SETTLE_WINDOWS); Serial.println(" windows)");
+        Serial.println("CTRLROW,RX,JAM_SETTLING_SKIP,0,0,0,0");
+        break;   // observe more before acting
     }
+
+    Serial.println("\n[AI] Jammer Detected -> cognitive re-select");
+    uint32_t f; uint8_t sf;
+    jamEngineSelect(currentFrequencyKHz, currentSF, &f, &sf);
+    Serial.print("CTRLROW,RX,JAM_HOP,streak="); Serial.print(jamEngineStreak());
+    Serial.print(","); Serial.print(f);
+    Serial.print(","); Serial.println(sf);
+    beginControlCommand(CMD_CHANNEL_HOP, f, sf, currentCR);
+    break;
+}
     case 2:
-      {  // Added curly braces to allow local variable declarations safely
+      { 
+         // Added curly braces to allow local variable declarations safely
         Serial.println("\n[AI] Weak Link\nIncreasing Robustness");
+        
+        if (!actionAllowed()) {
+           Serial.println("CTRLROW,RX,LINK_SETTLING_SKIP,0,0,0,0");
+                          }
         // If it's below 10, force start at 10.
         // If it's 10 or 11, step up.
         // If it's 12 or higher, cap at 12.
@@ -1229,6 +1264,7 @@ void executeDecision(int prediction) {
         int cr = (currentCR < 6) ? 6 : ((currentCR < 8) ? currentCR + 1 : 8);
 
         beginControlCommand(CMD_LINK_ADAPT, currentFrequencyKHz, sf, cr);
+        jamEngineResetStreak();
         break;
       }
 
@@ -1246,6 +1282,7 @@ void executeDecision(int prediction) {
 
         // FIXED: Passing variables now instead of hardcoded 7, 5
         beginControlCommand(CMD_LINK_ADAPT, currentFrequencyKHz, sf, cr);
+        jamEngineResetStreak();
         break;
       }
     default:
